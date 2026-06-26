@@ -1,26 +1,126 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FAF8F5; /* Warm Cream */
+  --foreground: #2B221E; /* Warm Espresso/Charcoal */
+  --card-bg: #FFFFFF;
+  --card-border: #EAE3D9;
+  
+  --primary: #B85C38; /* Terracotta */
+  --primary-hover: #9E4A2A;
+  --primary-light: #F7EBE4;
+  
+  --secondary: #556B2F; /* Olive/Sage Green */
+  --secondary-hover: #415224;
+  --secondary-light: #EDF1E7;
+  
+  --accent: #E28743; /* Warm Amber */
+  --muted: #8A7E78;
+  --divider: #EAE3D9;
+  
+  --font-plus-jakarta-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-lora: 'Lora', Georgia, serif;
+}
+
+.dark {
+  --background: #191513; /* Deep Espresso */
+  --foreground: #F4EFEA; /* Soft Cream */
+  --card-bg: #221D1A;
+  --card-border: #332A26;
+  
+  --primary: #D37B55; /* Warm Terracotta */
+  --primary-hover: #E28F6B;
+  --primary-light: #3A2F2A;
+  
+  --secondary: #8FBC8F; /* Soft Sage */
+  --secondary-hover: #A3CFA3;
+  --secondary-light: #232A23;
+  
+  --accent: #F4A261;
+  --muted: #9E9088;
+  --divider: #332A26;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-card: var(--card-bg);
+  --color-border: var(--card-border);
+  
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-light: var(--secondary-light);
+  
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-divider: var(--divider);
+  
+  --font-sans: var(--font-plus-jakarta-sans);
+  --font-serif: var(--font-lora);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-plus-jakarta-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Polaroid effect */
+.polaroid {
+  background: white;
+  padding: 10px 10px 20px 10px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border: 1px solid #EAE3D9;
+  transform: rotate(var(--r, 0deg));
+  transition: all 0.3s ease;
+}
+
+.polaroid:hover {
+  transform: scale(1.03) rotate(0deg);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
+.dark .polaroid {
+  background: #2D2723;
+  border-color: #3D3530;
+}
+
+/* Tree Canvas Background */
+.tree-grid-bg {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(184, 92, 56, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(184, 92, 56, 0.03) 1px, transparent 1px);
+}
+
+.dark .tree-grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(211, 123, 85, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(211, 123, 85, 0.02) 1px, transparent 1px);
 }
