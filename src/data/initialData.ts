@@ -27,7 +27,7 @@ export const initialMembers: Person[] = [
     name: 'Siti Aminah',
     nickname: 'Mbah Siti',
     gender: 'F',
-    birthDate: '1943-05-10',
+    birthDate: '1939-05-10',
     domicile: 'Kediri',
     isMerantau: false,
     photoUrl: '',
@@ -54,7 +54,7 @@ export const initialMembers: Person[] = [
     photoUrl: '',
     phone: '081234567811',
     email: 'budi.santoso@email.com',
-    bio: 'Anak sulung Mbah Hardjo. Bekerja sebagai pensiunan pegawai BUMN di Surabaya. Sangat mengayomi adik-adiknya dan menjadi penasihat utama dalam kepengurusan arisan keluarga.',
+    bio: 'Anak keenam dari tujuh bersaudara Mbah Hardjo. Bekerja sebagai pensiunan pegawai BUMN di Surabaya. Sangat mengayomi adik-adiknya dan menjadi penasihat utama dalam kepengurusan arisan keluarga.',
     memories: [
       'Pak Budi sangat gemar merawat tanaman hias di rumahnya di Surabaya.',
       'Sering membawakan oleh-oleh spiku khas Surabaya setiap kali mudik ke Kediri.'
@@ -72,7 +72,7 @@ export const initialMembers: Person[] = [
     photoUrl: '',
     phone: '081234567812',
     email: 'dewi.lestari@email.com',
-    bio: 'Istri dari Pak Budi Santoso. Aktif dalam kegiatan sosial keagamaan dan piawai merajut pakaian untuk cucu-cucunya.',
+    bio: 'Anak kedua dari tiga bersaudara Mbah Sastro. Istri dari Pak Budi Santoso. Aktif dalam kegiatan sosial keagamaan dan piawai merajut pakaian untuk cucu-cucunya.',
     generation: 1
   },
 
@@ -82,13 +82,13 @@ export const initialMembers: Person[] = [
     name: 'Sri Wahyuni',
     nickname: 'Bu Sri',
     gender: 'F',
-    birthDate: '1968-01-08',
+    birthDate: '1960-01-08',
     domicile: 'Malang',
     isMerantau: true,
     photoUrl: '',
     phone: '081234567821',
     email: 'sri.wahyuni@email.com',
-    bio: 'Anak kedua Mbah Hardjo. Mengelola usaha katering keluarga di Malang. Terkenal energik, ramah, dan menjadi motor penggerak setiap acara reuni besar keluarga.',
+    bio: 'Anak kedua dari tujuh bersaudara Mbah Hardjo. Mengelola usaha katering keluarga di Malang. Terkenal energik, ramah, dan menjadi motor penggerak setiap acara reuni besar keluarga.',
     memories: [
       'Bu Sri selalu sibuk di dapur menyiapkan konsumsi terbaik untuk seluruh kerabat.',
       'Paling suka bernyanyi campursari bersama kerabat saat kumpul keluarga.'
@@ -117,13 +117,13 @@ export const initialMembers: Person[] = [
     name: 'Ahmad Hidayat',
     nickname: 'Pak Ahmad',
     gender: 'M',
-    birthDate: '1972-10-30',
+    birthDate: '1963-10-30',
     domicile: 'Sidoarjo',
     isMerantau: true,
     photoUrl: '',
     phone: '081234567831',
     email: 'ahmad.hidayat@email.com',
-    bio: 'Anak ketiga Mbah Hardjo. Bekerja sebagai wirausahawan di bidang logistik di Sidoarjo. Senang berdiskusi politik dan sejarah keluarga.',
+    bio: 'Anak keempat dari tujuh bersaudara Mbah Hardjo. Bekerja sebagai wirausahawan di bidang logistik di Sidoarjo. Senang berdiskusi politik dan sejarah keluarga.',
     generation: 1
   },
   {
@@ -146,13 +146,13 @@ export const initialMembers: Person[] = [
     name: 'Anik Wijayanti',
     nickname: 'Bu Anik',
     gender: 'F',
-    birthDate: '1978-07-22',
+    birthDate: '1969-07-22',
     domicile: 'Kediri',
     isMerantau: false,
     photoUrl: '',
     phone: '081234567841',
     email: 'anik.wijayanti@email.com',
-    bio: 'Anak bungsu Mbah Hardjo. Bekerja sebagai guru SMP negeri di Kediri. Dialah yang merawat Mbah Siti Aminah dan menjaga kelestarian rumah utama keluarga besar di Kediri.',
+    bio: 'Anak bungsu (ketujuh) dari tujuh bersaudara Mbah Hardjo. Bekerja sebagai guru SMP negeri di Kediri. Dialah yang merawat Mbah Siti Aminah dan menjaga kelestarian rumah utama keluarga besar di Kediri.',
     memories: [
       'Bu Anik adalah penjaga pintu utama rumah Kediri yang selalu menyambut hangat kepulangan para perantau.',
       'Sangat telaten dalam mendokumentasikan foto-foto lama keluarga besar.'
@@ -170,6 +170,47 @@ export const initialMembers: Person[] = [
     photoUrl: '',
     phone: '081234567842',
     bio: 'Suami dari Bu Anik Wijayanti. Bekerja di dinas pertanian Kediri. Menggemari burung kicau dan berkebun sayur di pekarangan rumah.',
+    generation: 1
+  },
+
+  // Tiga Saudara Tambahan dari Pihak Ayah (untuk melengkapi 7 bersaudara)
+  {
+    id: 'p-g1-s1',
+    name: 'Eko Santoso',
+    nickname: 'Pak Eko',
+    gender: 'M',
+    birthDate: '1958-08-14',
+    domicile: 'Kediri',
+    isMerantau: false,
+    photoUrl: '',
+    phone: '081234567809',
+    bio: 'Anak sulung dari tujuh bersaudara Mbah Hardjo. Tinggal di Kediri dekat dengan rumah utama, sangat aktif membantu kegiatan RT dan menjadi penengah jika ada musyawarah keluarga.',
+    generation: 1
+  },
+  {
+    id: 'p-g1-s2',
+    name: 'Dwi Rahayu',
+    nickname: 'Bu Dwi',
+    gender: 'F',
+    birthDate: '1961-03-22',
+    domicile: 'Jakarta',
+    isMerantau: true,
+    photoUrl: '',
+    phone: '081234567807',
+    bio: 'Anak ketiga dari tujuh bersaudara Mbah Hardjo. Merantau di Jakarta bersama keluarganya dan bekerja sebagai PNS di kementerian.',
+    generation: 1
+  },
+  {
+    id: 'p-g1-s3',
+    name: 'Tri Wibowo',
+    nickname: 'Om Tri',
+    gender: 'M',
+    birthDate: '1964-11-05',
+    domicile: 'Bandung',
+    isMerantau: true,
+    photoUrl: '',
+    phone: '081234567805',
+    bio: 'Anak kelima dari tujuh bersaudara Mbah Hardjo. Bekerja sebagai arsitek di Bandung, gemar berkebun, merancang lanskap, dan aktif dalam arisan regional.',
     generation: 1
   },
 
@@ -452,13 +493,13 @@ export const initialMembers: Person[] = [
     name: 'Wibowo Sastrowardoyo',
     nickname: 'Pak Wibowo',
     gender: 'M',
-    birthDate: '1970-11-05',
+    birthDate: '1966-11-05',
     domicile: 'Nganjuk',
     isMerantau: false,
     photoUrl: '',
     phone: '081234567881',
     email: 'wibowo.sastro@email.com',
-    bio: 'Anak kedua Mbah Sastro. Mengelola perkebunan mangga dan bawang merah di Nganjuk. Menjadi tulang punggung pengurus rumah tangga keluarga besar pihak Sastrowardoyo.',
+    bio: 'Anak sulung Mbah Sastro. Mengelola perkebunan mangga dan bawang merah di Nganjuk. Menjadi tulang punggung pengurus rumah tangga keluarga besar pihak Sastrowardoyo.',
     generation: 1
   },
   {
@@ -679,16 +720,25 @@ export const initialRelationships: Relationship[] = [
 // Relasi Orang Tua ke Anak (Parent-Child Relations)
 export const initialParentChildRelations: ParentChild[] = [
   // Anak Mbah Hardjo & Mbah Siti
-  { parentId: 'p-g0-1', childId: 'p-g1-1' }, // Mbah Hardjo ke Pak Budi
+  { parentId: 'p-g0-1', childId: 'p-g1-s1' }, // Mbah Hardjo ke Pak Eko (Anak 1)
+  { parentId: 'p-g0-2', childId: 'p-g1-s1' }, // Mbah Siti ke Pak Eko
+  
+  { parentId: 'p-g0-1', childId: 'p-g1-3' }, // Mbah Hardjo ke Bu Sri (Anak 2)
+  { parentId: 'p-g0-2', childId: 'p-g1-3' }, // Mbah Siti ke Bu Sri
+  
+  { parentId: 'p-g0-1', childId: 'p-g1-s2' }, // Mbah Hardjo ke Bu Dwi (Anak 3)
+  { parentId: 'p-g0-2', childId: 'p-g1-s2' }, // Mbah Siti ke Bu Dwi
+  
+  { parentId: 'p-g0-1', childId: 'p-g1-5' }, // Mbah Hardjo ke Pak Ahmad (Anak 4)
+  { parentId: 'p-g0-2', childId: 'p-g1-5' }, // Mbah Siti ke Pak Ahmad
+  
+  { parentId: 'p-g0-1', childId: 'p-g1-s3' }, // Mbah Hardjo ke Om Tri (Anak 5)
+  { parentId: 'p-g0-2', childId: 'p-g1-s3' }, // Mbah Siti ke Om Tri
+  
+  { parentId: 'p-g0-1', childId: 'p-g1-1' }, // Mbah Hardjo ke Pak Budi (Anak 6 - Ayah)
   { parentId: 'p-g0-2', childId: 'p-g1-1' }, // Mbah Siti ke Pak Budi
   
-  { parentId: 'p-g0-1', childId: 'p-g1-3' }, // Mbah Hardjo ke Bu Sri
-  { parentId: 'p-g0-2', childId: 'p-g1-3' }, // Mbah Siti ke Bu Sri
-
-  { parentId: 'p-g0-1', childId: 'p-g1-5' }, // Mbah Hardjo ke Pak Ahmad
-  { parentId: 'p-g0-2', childId: 'p-g1-5' }, // Mbah Siti ke Pak Ahmad
-
-  { parentId: 'p-g0-1', childId: 'p-g1-7' }, // Mbah Hardjo ke Bu Anik
+  { parentId: 'p-g0-1', childId: 'p-g1-7' }, // Mbah Hardjo ke Bu Anik (Anak 7 - Bungsu)
   { parentId: 'p-g0-2', childId: 'p-g1-7' }, // Mbah Siti ke Bu Anik
 
   // Anak Pak Budi & Bu Dewi (Grandchildren Gen 2)
