@@ -10,16 +10,17 @@ import {
   MapPin, 
   Map, 
   HelpCircle,
-  Sparkles
+  Sparkles,
+  User
 } from 'lucide-react';
-import MemberDetail from './MemberDetail';
+import MemberDetail from '@/components/MemberDetail';
 
 // Dimensi node silsilah
-const NODE_WIDTH = 150;
-const NODE_HEIGHT = 76;
-const SPOUSE_GAP = 190; // Jarak antar pusat pasangan
-const SIBLING_GAP = 40;
-const GEN_GAP = 220; // Jarak antar generasi (Y axis)
+const NODE_WIDTH = 180;
+const NODE_HEIGHT = 92;
+const SPOUSE_GAP = 230; // Jarak antar pusat pasangan
+const SIBLING_GAP = 50;
+const GEN_GAP = 250; // Jarak antar generasi (Y axis)
 
 interface Position {
   x: number;
@@ -127,18 +128,9 @@ export default function FamilyTree() {
       }
 
       // Hitung total lebar anak-anak
-      // Agar anak tidak dihitung ganda jika bapak/ibu diproses terpisah, kita hanya hitung dari "primary parent"
       let childrenTotalWidth = 0;
       children.forEach(childId => {
-        // Jika anak memiliki pasangan, kita hanya memproses salah satunya sebagai root sub-tree anak tersebut
-        const childSpouse = spouseMap[childId];
-        const primaryChildId = childSpouse && members.find(m => m.id === childSpouse)?.gender === 'M' && members.find(m => m.id === childId)?.gender === 'F'
-          ? childSpouse 
-          : childId;
-          
-        if (childId === primaryChildId) {
-          childrenTotalWidth += calculateSubTreeWidth(childId);
-        }
+        childrenTotalWidth += calculateSubTreeWidth(childId);
       });
 
       const finalWidth = Math.max(baseWidth, childrenTotalWidth);
@@ -212,20 +204,12 @@ export default function FamilyTree() {
         // Letakkan anak-anak
         const children = getChildrenOf(husband.id, wife.id);
         if (children.length > 0) {
-          // Hitung total lebar anak-anak untuk mensimetriskan posisi mereka
           let childrenWidth = 0;
           const childLayoutIds: string[] = [];
 
           children.forEach(childId => {
-            const childSpouse = spouseMap[childId];
-            const primaryChildId = childSpouse && members.find(m => m.id === childSpouse)?.gender === 'M'
-              ? childSpouse 
-              : childId;
-              
-            if (childId === primaryChildId) {
-              childrenWidth += subTreeWidths[childId] || (NODE_WIDTH + SIBLING_GAP);
-              childLayoutIds.push(childId);
-            }
+            childrenWidth += subTreeWidths[childId] || (NODE_WIDTH + SIBLING_GAP);
+            childLayoutIds.push(childId);
           });
 
           // Mulai peletakan anak dari ujung kiri
@@ -255,11 +239,14 @@ export default function FamilyTree() {
 
             // Dapatkan koordinat anak yang terpasang
             const childSpouse = spouseMap[childId];
-            let targetConnectX = nodePositions[childId].x;
+            let targetConnectX = nodePositions[childId]?.x;
 
-            if (childSpouse) {
+            if (childSpouse && nodePositions[childSpouse]) {
               // Jika anak berpasangan, hubungkan ke titik tengah pasangan tersebut
               targetConnectX = (nodePositions[childId].x + nodePositions[childSpouse].x) / 2;
+            } else if (!nodePositions[childId]) {
+              // Jika anak belum terposisi (karena skip/ early return), gunakan estimasi
+              targetConnectX = childLeftX + childWidth / 2;
             }
 
             minChildX = Math.min(minChildX, targetConnectX);
@@ -296,15 +283,8 @@ export default function FamilyTree() {
           const childLayoutIds: string[] = [];
 
           children.forEach(childId => {
-            const childSpouse = spouseMap[childId];
-            const primaryChildId = childSpouse && members.find(m => m.id === childSpouse)?.gender === 'M'
-              ? childSpouse 
-              : childId;
-              
-            if (childId === primaryChildId) {
-              childrenWidth += subTreeWidths[childId] || (NODE_WIDTH + SIBLING_GAP);
-              childLayoutIds.push(childId);
-            }
+            childrenWidth += subTreeWidths[childId] || (NODE_WIDTH + SIBLING_GAP);
+            childLayoutIds.push(childId);
           });
 
           let childLeftX = adjustedCenterX - childrenWidth / 2;
@@ -326,9 +306,11 @@ export default function FamilyTree() {
             positionFamily(childId, childLeftX, childY);
 
             const childSpouse = spouseMap[childId];
-            let targetConnectX = nodePositions[childId].x;
-            if (childSpouse) {
+            let targetConnectX = nodePositions[childId]?.x;
+            if (childSpouse && nodePositions[childSpouse]) {
               targetConnectX = (nodePositions[childId].x + nodePositions[childSpouse].x) / 2;
+            } else if (!nodePositions[childId]) {
+              targetConnectX = childLeftX + childWidth / 2;
             }
 
             minChildX = Math.min(minChildX, targetConnectX);
@@ -363,7 +345,7 @@ export default function FamilyTree() {
       if (root.id === primaryRootId) {
         const rootWidth = subTreeWidths[primaryRootId] || NODE_WIDTH;
         positionFamily(primaryRootId, rootStartX, 50);
-        rootStartX += rootWidth + 80; // Tambahkan jarak antar pohon jika ada beberapa root
+        rootStartX += rootWidth + 80; // Jarak antar pohon keluarga utama
       }
     });
 
@@ -428,6 +410,29 @@ export default function FamilyTree() {
     setHighlightedNodeId(null);
   };
 
+  const handleCenterOnMe = () => {
+    const me = members.find(m => m.id === 'p-g2-umam');
+    if (me && layoutData.positions[me.id] && containerRef.current) {
+      const pos = layoutData.positions[me.id];
+      const rect = containerRef.current.getBoundingClientRect();
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      setScale(1.15);
+      setTranslate({
+        x: centerX - pos.x * 1.15,
+        y: centerY - (pos.y + NODE_HEIGHT / 2) * 1.15
+      });
+
+      setHighlightedNodeId(me.id);
+      setSelectedMemberId(me.id);
+      
+      setTimeout(() => {
+        setHighlightedNodeId(null);
+      }, 4000);
+    }
+  };
+
   // --- SEARCH & CENTERING NODE ---
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -477,10 +482,10 @@ export default function FamilyTree() {
 
   // Render Legend Tingkatan Generasi
   const generationLegend = [
-    { label: 'Sesepuh (Mbah)', color: 'border-amber-600 dark:border-amber-500 bg-amber-500/10' },
-    { label: 'Bapak / Ibu', color: 'border-primary bg-primary-light' },
-    { label: 'Cucu (Mas / Mbak)', color: 'border-secondary bg-secondary-light' },
-    { label: 'Cicit (Adik)', color: 'border-accent/40 bg-accent/10' }
+    { label: 'Sesepuh (Mbah)', color: 'border-amber-500 bg-amber-500/10' },
+    { label: 'Bapak / Ibu', color: 'border-emerald-500 bg-emerald-500/10' },
+    { label: 'Cucu (Mas / Mbak)', color: 'border-indigo-500 bg-indigo-500/10' },
+    { label: 'Cicit (Adik)', color: 'border-rose-400 bg-rose-500/10' }
   ];
 
   return (
@@ -566,7 +571,7 @@ export default function FamilyTree() {
                   markerHeight="6"
                   orient="auto-start-reverse"
                 >
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#CCCCCC" />
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#94A3B8" />
                 </marker>
               </defs>
               
@@ -577,12 +582,12 @@ export default function FamilyTree() {
                     key={edge.id}
                     d={edge.d}
                     fill="none"
-                    stroke={isMarriage ? '#B85C38' : '#D1C7BD'}
-                    strokeWidth={isMarriage ? 2.5 : 1.75}
-                    strokeDasharray={isMarriage ? 'none' : 'none'}
+                    stroke={isMarriage ? '#F59E0B' : '#94A3B8'}
+                    strokeWidth={isMarriage ? 2.25 : 1.5}
+                    strokeDasharray="none"
                     className="transition-all duration-300"
                     style={{
-                      opacity: 0.75
+                      opacity: isMarriage ? 0.8 : 0.4
                     }}
                   />
                 );
@@ -596,23 +601,34 @@ export default function FamilyTree() {
 
               const isFemale = member.gender === 'F';
               const isDeceased = !!member.deathDate;
-              
-              // Cek filter aktif
               const isFilteredIn = filteredMemberIds.includes(member.id);
+              const isMe = member.id === 'p-g2-umam';
               
-              // Penentuan warna node berdasarkan generasi
-              let genStyles = 'border-primary bg-primary-light text-foreground';
+              // Premium Gen Styles
+              let genStyles = 'border-emerald-500/60 bg-emerald-500/5 hover:bg-emerald-500/10 text-foreground shadow-sm';
+              let badgeColor = 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400';
+              
               if (member.generation === 0) {
-                genStyles = 'border-amber-600 dark:border-amber-500 bg-amber-500/10 text-foreground';
+                genStyles = 'border-amber-500 bg-amber-500/5 hover:bg-amber-500/10 text-foreground shadow-amber-500/5';
+                badgeColor = 'bg-amber-500/10 text-amber-600 dark:text-amber-400';
               } else if (member.generation === 2) {
-                genStyles = 'border-secondary bg-secondary-light text-foreground';
+                genStyles = 'border-indigo-500 bg-indigo-500/5 hover:bg-indigo-500/10 text-foreground shadow-indigo-500/5';
+                badgeColor = 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400';
               } else if (member.generation === 3) {
-                genStyles = 'border-accent/40 bg-accent/10 text-foreground';
+                genStyles = 'border-rose-400 bg-rose-500/5 hover:bg-rose-500/10 text-foreground shadow-rose-500/5';
+                badgeColor = 'bg-rose-500/10 text-rose-500 dark:text-rose-400';
+              }
+
+              // Special highlight for Developer/User (Umam)
+              if (isMe) {
+                genStyles = 'border-primary bg-gradient-to-br from-primary/10 to-indigo-500/15 dark:from-primary/20 dark:to-indigo-500/25 text-foreground ring-2 ring-primary/40 shadow-[0_0_15px_rgba(20,184,166,0.25)] hover:shadow-[0_0_20px_rgba(20,184,166,0.4)] hover:scale-105 z-20';
+                badgeColor = 'bg-primary/20 text-primary dark:text-primary-light';
               }
 
               // Styling jika almarhum
               if (isDeceased) {
-                genStyles = 'border-dashed border-stone-400 dark:border-stone-600 bg-stone-100 dark:bg-stone-800/60 text-stone-500 dark:text-stone-400';
+                genStyles = 'border-dashed border-stone-400 dark:border-stone-600 bg-stone-50/50 dark:bg-stone-900/40 text-stone-500 dark:text-stone-400 opacity-60 hover:opacity-80 shadow-none';
+                badgeColor = 'bg-stone-500/10 text-stone-500 dark:text-stone-400';
               }
 
               // Highlight pencarian
@@ -627,46 +643,52 @@ export default function FamilyTree() {
                     top: pos.y,
                     width: NODE_WIDTH,
                     height: NODE_HEIGHT,
-                    opacity: isFilteredIn ? 1.0 : 0.25,
+                    opacity: isFilteredIn ? 1.0 : 0.2,
                     pointerEvents: 'auto'
                   }}
-                  className={`absolute p-2.5 rounded-2xl border-2 shadow-sm hover:shadow-lg flex flex-col justify-between cursor-pointer transition-all duration-300 ${genStyles} ${
+                  className={`absolute p-3 rounded-2xl border-2 backdrop-blur-md flex flex-col justify-between cursor-pointer transition-all duration-300 ${genStyles} ${
                     isSearched 
                       ? 'ring-4 ring-amber-400 animate-pulse scale-105 shadow-amber-200 dark:shadow-amber-950/20 z-30' 
-                      : 'hover:scale-103'
+                      : 'hover:-translate-y-0.5'
                   }`}
                 >
                   <div className="min-w-0">
-                    <div className="flex justify-between items-start">
-                      <h4 className="text-xs font-bold truncate leading-tight flex-1 pr-1">
+                    <div className="flex justify-between items-start gap-1">
+                      <h4 className="text-xs font-bold font-serif truncate leading-tight flex-1 text-foreground">
                         {member.nickname || member.name}
                       </h4>
-                      {/* Penanda Gender kecil */}
-                      <span className={`text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        isFemale 
-                          ? 'bg-rose-500/10 text-rose-500 dark:text-rose-400' 
-                          : 'bg-blue-500/10 text-blue-500 dark:text-blue-400'
-                      }`}>
-                        {member.gender}
-                      </span>
+                      <div className="flex items-center gap-1">
+                        {isMe && (
+                          <span className="text-[7px] font-extrabold px-1 py-0.5 rounded bg-primary/20 text-primary dark:text-primary-light uppercase tracking-wider animate-pulse flex items-center gap-0.5">
+                            ✨ Dev
+                          </span>
+                        )}
+                        <span className={`text-[8px] font-extrabold h-4 w-4 rounded-full flex items-center justify-center flex-shrink-0 ${
+                          isFemale 
+                            ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400' 
+                            : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                        }`}>
+                          {member.gender}
+                        </span>
+                      </div>
                     </div>
                     
-                    <p className="text-[9px] text-muted truncate mt-0.5 max-w-full">
+                    <p className="text-[9px] text-muted truncate mt-0.5 max-w-full font-medium">
                       {member.name}
                     </p>
                   </div>
 
-                  <div className="flex justify-between items-center mt-1 pt-1.5 border-t border-divider/40 text-[9px]">
-                    <span className="truncate font-semibold max-w-[70px] text-muted leading-none flex items-center gap-0.5">
+                  <div className="flex justify-between items-center mt-1 pt-1.5 border-t border-border text-[9px]">
+                    <span className="truncate font-semibold max-w-[95px] text-muted/90 leading-none flex items-center gap-0.5">
                       📍 {member.domicile}
                     </span>
                     {member.isMerantau && !isDeceased && (
-                      <span className="px-1 py-0.5 rounded bg-secondary/10 text-secondary dark:text-secondary-hover font-bold text-[8px] leading-none uppercase tracking-wide flex items-center gap-0.5">
+                      <span className="px-1 py-0.5 rounded bg-secondary-light dark:bg-secondary/15 text-secondary dark:text-secondary-hover font-bold text-[7px] leading-none uppercase tracking-wider scale-90 origin-right">
                         Rantau
                       </span>
                     )}
                     {isDeceased && (
-                      <span className="font-bold text-[8px] leading-none text-stone-400 uppercase">
+                      <span className="font-bold text-[7.5px] leading-none text-stone-400 dark:text-stone-500 uppercase tracking-wider">
                         Wafat
                       </span>
                     )}
@@ -679,6 +701,14 @@ export default function FamilyTree() {
 
         {/* Floating Interactive Canvas Controls (Bottom Right) */}
         <div className="absolute bottom-6 right-6 flex flex-col gap-2 z-10 bg-card/90 backdrop-blur border border-border p-2 rounded-2xl shadow-lg">
+          <button 
+            onClick={handleCenterOnMe} 
+            title="Temukan Saya (Umam)" 
+            className="p-2 rounded-xl hover:bg-primary/10 text-primary transition-all cursor-pointer flex items-center justify-center border border-primary/20 bg-primary/5 hover:scale-105"
+          >
+            <User className="h-5 w-5" />
+          </button>
+          <div className="h-px bg-border my-1" />
           <button 
             onClick={handleZoomIn} 
             title="Perbesar" 
@@ -709,7 +739,7 @@ export default function FamilyTree() {
           </h5>
           {generationLegend.map((lg) => (
             <div key={lg.label} className="flex items-center gap-2">
-              <span className={`h-3 w-6 rounded border ${lg.color}`}></span>
+              <span className={`h-3 w-6 rounded border-2 ${lg.color}`}></span>
               <span className="text-muted font-semibold">{lg.label}</span>
             </div>
           ))}

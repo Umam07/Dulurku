@@ -15,7 +15,7 @@ import {
   Sparkles,
   BookOpen
 } from 'lucide-react';
-import AdminPanel from './AdminPanel';
+import AdminPanel from '@/components/AdminPanel';
 
 interface MemberDetailProps {
   memberId: string | null;

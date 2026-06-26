@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useFamily } from '@/context/FamilyContext';
-import { Person, Relationship } from '@/types/family';
 import { Save, ShieldCheck } from 'lucide-react';
 
 interface AdminPanelProps {

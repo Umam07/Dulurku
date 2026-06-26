@@ -76,7 +76,24 @@ export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       const storedState = localStorage.getItem(STORAGE_KEY);
       if (storedState) {
-        setState(JSON.parse(storedState));
+        const parsed = JSON.parse(storedState);
+        const hasUmam = parsed.members?.some((m: any) => m.id === 'p-g2-umam');
+        const hasMaternal = parsed.members?.some((m: any) => m.id === 'p-m-g0-1');
+        
+        if (!hasUmam || !hasMaternal) {
+          const initialState: FamilyState = {
+            members: initialMembers,
+            relationships: initialRelationships,
+            parentChildRelations: initialParentChildRelations,
+            events: initialEvents,
+            announcements: initialAnnouncements,
+            guestbook: initialGuestbook
+          };
+          setState(initialState);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(initialState));
+        } else {
+          setState(parsed);
+        }
       } else {
         // First time initialization with seed data
         const initialState: FamilyState = {
