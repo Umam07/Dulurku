@@ -161,7 +161,10 @@ export default function FamilyTree() {
 
     // Fungsi rekursif untuk meletakkan node-node keluarga besar
     const positionFamily = (personId: string, leftX: number, y: number) => {
+      if (nodePositions[personId]) return;
       const spouseId = spouseMap[personId];
+      if (spouseId && nodePositions[spouseId]) return;
+
       const person = members.find(m => m.id === personId);
       if (!person) return;
 

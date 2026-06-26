@@ -404,6 +404,170 @@ export const initialMembers: Person[] = [
     photoUrl: '',
     bio: 'Cicit keempat Mbah Hardjo. Bayi sehat yang membawa kebahagiaan baru di tengah keluarga besar di Surabaya.',
     generation: 3
+  },
+
+  // --- PIHAK IBU (MATERNAL SIDE) ---
+  // Generasi 0: Kakek-Nenek dari Pihak Ibu (Maternal Roots)
+  {
+    id: 'p-m-g0-1',
+    name: 'Sastrowardoyo',
+    nickname: 'Mbah Sastro',
+    gender: 'M',
+    birthDate: '1941-03-18',
+    domicile: 'Nganjuk',
+    isMerantau: false,
+    photoUrl: '',
+    phone: '',
+    email: '',
+    bio: 'Kakek dari pihak ibu (ayah dari Ibu Dewi Lestari). Beliau adalah pensiunan dinas kehutanan (Perhutani) di Nganjuk. Penyabar, gemar menanam pohon jati, dan ahli dalam pranata mangsa (penanggalan musim Jawa).',
+    memories: [
+      'Mbah Sastro selalu membawa cucu-cucunya jalan-jalan ke hutan jati dekat rumah di Nganjuk setiap pagi hari raya.',
+      'Senang sekali mengajarkan cara mencangkok pohon buah-buahan.'
+    ],
+    generation: 0
+  },
+  {
+    id: 'p-m-g0-2',
+    name: 'Martini',
+    nickname: 'Mbah Martini',
+    gender: 'F',
+    birthDate: '1945-07-22',
+    domicile: 'Nganjuk',
+    isMerantau: false,
+    photoUrl: '',
+    phone: '081234567880',
+    email: '',
+    bio: 'Nenek dari pihak ibu. Pembuat batik tulis motif klasik khas Nganjukan. Sosok yang sangat lembut tutur katanya, telaten, dan selalu mendoakan keselamatan seluruh anak cucu perantaunya.',
+    memories: [
+      'Mbah Martini memiliki kain batik tulis buatan sendiri yang dihadiahkan kepada setiap anak mantunya.',
+      'Selalu membuatkan jenang sumsum hangat setiap kali cucunya datang ke Nganjuk.'
+    ],
+    generation: 0
+  },
+
+  // Generasi 1: Saudara-saudara Ibu Dewi Lestari (Anak Mbah Sastro & Mbah Martini)
+  // Note: Dewi Lestari sendiri (p-g1-2) sudah didefinisikan sebagai istri Pak Budi Santoso (p-g1-1)
+  {
+    id: 'p-m-g1-1',
+    name: 'Wibowo Sastrowardoyo',
+    nickname: 'Pak Wibowo',
+    gender: 'M',
+    birthDate: '1970-11-05',
+    domicile: 'Nganjuk',
+    isMerantau: false,
+    photoUrl: '',
+    phone: '081234567881',
+    email: 'wibowo.sastro@email.com',
+    bio: 'Anak kedua Mbah Sastro. Mengelola perkebunan mangga dan bawang merah di Nganjuk. Menjadi tulang punggung pengurus rumah tangga keluarga besar pihak Sastrowardoyo.',
+    generation: 1
+  },
+  {
+    id: 'p-m-g1-2',
+    name: 'Retno Willis',
+    nickname: 'Bu Retno',
+    gender: 'F',
+    birthDate: '1973-04-14',
+    domicile: 'Nganjuk',
+    isMerantau: false,
+    photoUrl: '',
+    phone: '081234567882',
+    bio: 'Istri dari Pak Wibowo Sastrowardoyo. Bekerja sebagai guru matematika SMA di Nganjuk.',
+    generation: 1
+  },
+  {
+    id: 'p-m-g1-3',
+    name: 'Indah Lestari',
+    nickname: 'Tante Indah',
+    gender: 'F',
+    birthDate: '1974-08-28',
+    domicile: 'Kediri',
+    isMerantau: true, // Merantau dari Nganjuk ke Kediri
+    photoUrl: '',
+    phone: '081234567883',
+    email: 'indah.lestari@email.com',
+    bio: 'Anak bungsu Mbah Sastro. Bekerja sebagai bidan di rumah sakit daerah Kediri. Sangat ramah dan menjadi tempat konsultasi kesehatan seluruh keluarga.',
+    generation: 1
+  },
+  {
+    id: 'p-m-g1-4',
+    name: 'Heri Prasetyo',
+    nickname: 'Om Heri',
+    gender: 'M',
+    birthDate: '1971-02-10',
+    domicile: 'Kediri',
+    isMerantau: true,
+    photoUrl: '',
+    phone: '081234567884',
+    bio: 'Suami dari Tante Indah Lestari. Bekerja sebagai supervisor di salah satu pabrik gula di Kediri.',
+    generation: 1
+  },
+
+  // Generasi 2: Sepupu-sepupu Umam dari Pihak Ibu
+  // Anak dari Wibowo Sastrowardoyo & Retno Willis:
+  {
+    id: 'p-m-g2-1',
+    name: 'Bagas Sastrowardoyo',
+    nickname: 'Bagas',
+    gender: 'M',
+    birthDate: '1998-06-12',
+    domicile: 'Nganjuk',
+    isMerantau: false,
+    photoUrl: '',
+    phone: '085812345701',
+    email: 'bagas.sastro@email.com',
+    bio: 'Cucu Mbah Sastro. Membantu ayahnya mengelola pertanian bawang merah modern dengan teknik penyiraman otomatis. Rekan diskusi pertanian yang cerdas.',
+    generation: 2
+  },
+  {
+    id: 'p-m-g2-2',
+    name: 'Dinda Sastrowardoyo',
+    nickname: 'Dinda',
+    gender: 'F',
+    birthDate: '2002-09-18',
+    domicile: 'Malang',
+    isMerantau: true, // Kuliah di Malang
+    photoUrl: '',
+    phone: '085812345702',
+    email: 'dinda.sastro@email.com',
+    bio: 'Cucu Mbah Sastro. Sedang menempuh pendidikan kedokteran di Universitas Brawijaya Malang. Bertekad menjadi dokter keluarga yang berdedikasi.',
+    generation: 2
+  },
+
+  // Anak dari Indah Lestari & Heri Prasetyo:
+  {
+    id: 'p-m-g2-3',
+    name: 'Aditya Prasetyo',
+    nickname: 'Adit Nganjuk',
+    gender: 'M',
+    birthDate: '1999-03-24',
+    domicile: 'Surabaya',
+    isMerantau: true, // Kuliah/Kerja di Surabaya
+    photoUrl: '',
+    phone: '085812345703',
+    email: 'adit.prast@email.com',
+    bio: 'Cucu Mbah Sastro. Bekerja di bidang desain produk kreatif di Surabaya. Hobi menggambar sketsa bangunan tua kolonial.',
+    generation: 2
+  },
+
+  // JEMBATAN KEDUA BELAH PIHAK KELUARGA (AYAH & IBU)
+  // Anaknya Pak Budi Santoso (Pihak Ayah) & Ibu Dewi Lestari (Pihak Ibu)
+  {
+    id: 'p-g2-umam',
+    name: 'Umam',
+    nickname: 'Umam',
+    gender: 'M',
+    birthDate: '1998-08-08',
+    domicile: 'Surabaya',
+    isMerantau: true, // Merantau dari Kediri/Nganjuk ke Surabaya
+    photoUrl: '',
+    phone: '081234567899',
+    email: 'umam@email.com',
+    bio: 'Cucu dari Mbah Hardjowidjojo (pihak Ayah) sekaligus cucu dari Mbah Sastrowardoyo (pihak Ibu). Bekerja sebagai Rekayasa Perangkat Lunak di Surabaya yang merancang platform Dulurku ini untuk menyatukan seluruh kerabat lintas generasi dan lintas kota.',
+    memories: [
+      'Ingat sekali saat mudik lebaran, diajak Mbah Hardjo minum teh sore di teras Kediri, lalu besoknya diajak Mbah Sastro melihat kebun jati di Nganjuk.',
+      'Paling suka mengumpulkan seluruh sepupu dari kedua belah pihak untuk berdiskusi teknologi dan silaturahmi digital.'
+    ],
+    generation: 2
   }
 ];
 
@@ -476,15 +640,41 @@ export const initialRelationships: Relationship[] = [
     marriageDate: '2022-02-22',
     status: 'married'
   },
-  {
-    id: 'r-g2-4',
-    personIdA: 'p-g2-8',
-    personIdB: 'p-g2-9',
-    type: 'spouse',
-    marriageDate: '2025-01-11',
-    status: 'married'
-  }
-];
+    {
+      id: 'r-g2-4',
+      personIdA: 'p-g2-8',
+      personIdB: 'p-g2-9',
+      type: 'spouse',
+      marriageDate: '2025-01-11',
+      status: 'married'
+    },
+    
+    // --- PERNIKAHAN PIHAK IBU ---
+    {
+      id: 'r-m-g0-1',
+      personIdA: 'p-m-g0-1',
+      personIdB: 'p-m-g0-2',
+      type: 'spouse',
+      marriageDate: '1966-08-12',
+      status: 'married'
+    },
+    {
+      id: 'r-m-g1-1',
+      personIdA: 'p-m-g1-1',
+      personIdB: 'p-m-g1-2',
+      type: 'spouse',
+      marriageDate: '1995-10-20',
+      status: 'married'
+    },
+    {
+      id: 'r-m-g1-2',
+      personIdA: 'p-m-g1-4',
+      personIdB: 'p-m-g1-3',
+      type: 'spouse',
+      marriageDate: '1996-05-18',
+      status: 'married'
+    }
+  ];
 
 // Relasi Orang Tua ke Anak (Parent-Child Relations)
 export const initialParentChildRelations: ParentChild[] = [
@@ -542,7 +732,30 @@ export const initialParentChildRelations: ParentChild[] = [
 
   // Anak Angga Saputra & Fitri Handayani (Great-Grandchildren Gen 3)
   { parentId: 'p-g2-5', childId: 'p-g3-4' }, // Angga ke Arjuna
-  { parentId: 'p-g2-6', childId: 'p-g3-4' }  // Fitri ke Arjuna
+  { parentId: 'p-g2-6', childId: 'p-g3-4' }, // Fitri ke Arjuna
+
+  // --- RELASI ORANG TUA - ANAK PIHAK IBU ---
+  // Anak Mbah Sastro & Mbah Martini (Pihak Ibu)
+  { parentId: 'p-m-g0-1', childId: 'p-g1-2' }, // Mbah Sastro ke Ibu Dewi
+  { parentId: 'p-m-g0-2', childId: 'p-g1-2' }, // Mbah Martini ke Ibu Dewi
+  { parentId: 'p-m-g0-1', childId: 'p-m-g1-1' }, // Mbah Sastro ke Pak Wibowo
+  { parentId: 'p-m-g0-2', childId: 'p-m-g1-1' }, // Mbah Martini ke Pak Wibowo
+  { parentId: 'p-m-g0-1', childId: 'p-m-g1-3' }, // Mbah Sastro ke Tante Indah
+  { parentId: 'p-m-g0-2', childId: 'p-m-g1-3' }, // Mbah Martini ke Tante Indah
+
+  // Anak Pak Wibowo & Bu Retno (Gen 2)
+  { parentId: 'p-m-g1-1', childId: 'p-m-g2-1' }, // Pak Wibowo ke Bagas
+  { parentId: 'p-m-g1-2', childId: 'p-m-g2-1' }, // Bu Retno ke Bagas
+  { parentId: 'p-m-g1-1', childId: 'p-m-g2-2' }, // Pak Wibowo ke Dinda
+  { parentId: 'p-m-g1-2', childId: 'p-m-g2-2' }, // Bu Retno ke Dinda
+
+  // Anak Tante Indah & Om Heri (Gen 2)
+  { parentId: 'p-m-g1-3', childId: 'p-m-g2-3' }, // Tante Indah ke Adit
+  { parentId: 'p-m-g1-4', childId: 'p-m-g2-3' }, // Om Heri ke Adit
+
+  // Anak Pak Budi Santoso (Ayah) & Ibu Dewi Lestari (Ibu) -> Umam!
+  { parentId: 'p-g1-1', childId: 'p-g2-umam' }, // Pak Budi ke Umam
+  { parentId: 'p-g1-2', childId: 'p-g2-umam' }  // Ibu Dewi ke Umam
 ];
 
 // Acara Awal Kalender Guyub
