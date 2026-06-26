@@ -4,7 +4,6 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
   Person, 
   Relationship, 
-  ParentChild, 
   FamilyEvent, 
   Announcement, 
   GuestbookEntry,
@@ -73,6 +72,7 @@ export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   // Load state from localStorage on mount
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
     try {
       const storedState = localStorage.getItem(STORAGE_KEY);
       if (storedState) {
@@ -105,6 +105,7 @@ export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     } finally {
       setIsLoaded(true);
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   // Save state to localStorage whenever it changes, but only after initial load

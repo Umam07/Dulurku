@@ -1,20 +1,17 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useFamily } from '@/context/FamilyContext';
-import { Person } from '@/types/family';
 import { 
   X, 
   Phone, 
   Mail, 
-  MapPin, 
   Calendar, 
   Compass, 
   Heart, 
   Trash2, 
   Edit3, 
   Plus, 
-  ChevronRight,
   Sparkles,
   BookOpen
 } from 'lucide-react';
@@ -41,11 +38,13 @@ export default function MemberDetail({ memberId, onClose }: MemberDetailProps) {
 
   const member = memberId ? members.find(m => m.id === memberId) : null;
 
-  // Reset tab saat berganti anggota
-  useEffect(() => {
+  // Reset tab saat berganti anggota (sinkron saat render prop berubah)
+  const [prevMemberId, setPrevMemberId] = useState<string | null>(memberId);
+  if (memberId !== prevMemberId) {
+    setPrevMemberId(memberId);
     setActiveTab('bio');
     setIsEditing(false);
-  }, [memberId]);
+  }
 
   if (!member) return null;
 
@@ -189,7 +188,7 @@ export default function MemberDetail({ memberId, onClose }: MemberDetailProps) {
               </h3>
               {member.nickname && (
                 <span className="px-2 py-0.5 rounded-md bg-card border border-border text-[10px] font-bold text-primary italic">
-                  "{member.nickname}"
+                  &ldquo;{member.nickname}&rdquo;
                 </span>
               )}
             </div>
@@ -386,7 +385,7 @@ export default function MemberDetail({ memberId, onClose }: MemberDetailProps) {
                       member.memories.map((memory, i) => (
                         <div key={i} className="bg-card border border-border p-4 rounded-2xl relative shadow-sm text-xs leading-relaxed italic">
                           <span className="absolute top-3 right-4 text-3xl font-serif text-primary/15 pointer-events-none">“</span>
-                          <p className="text-foreground">"{memory}"</p>
+                          <p className="text-foreground">&ldquo;{memory}&rdquo;</p>
                         </div>
                       ))
                     ) : (

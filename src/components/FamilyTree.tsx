@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { useFamily } from '@/context/FamilyContext';
-import { Person } from '@/types/family';
 import { 
   Search, 
   ZoomIn, 
@@ -37,8 +36,7 @@ export default function FamilyTree() {
   const { 
     members, 
     relationships, 
-    parentChildRelations,
-    isAdmin 
+    parentChildRelations
   } = useFamily();
 
   // State untuk interaksi kanvas

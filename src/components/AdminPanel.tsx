@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useFamily } from '@/context/FamilyContext';
-import { Person, Relationship, ParentChild } from '@/types/family';
-import { Sparkles, Save, ShieldCheck } from 'lucide-react';
+import { Person, Relationship } from '@/types/family';
+import { Save, ShieldCheck } from 'lucide-react';
 
 interface AdminPanelProps {
   editPersonId?: string; // Jika disediakan, dalam mode edit
@@ -48,6 +48,7 @@ export default function AdminPanel({ editPersonId, onSuccess }: AdminPanelProps)
 
   // Seed form jika mode edit
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
     if (editMember) {
       setName(editMember.name);
       setNickname(editMember.nickname || '');
@@ -84,6 +85,7 @@ export default function AdminPanel({ editPersonId, onSuccess }: AdminPanelProps)
         setMarriageStatus('married');
       }
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [editPersonId, editMember, parentChildRelations, relationships, members]);
 
   // Saring opsi ayah & ibu potensial (harus dari generasi di atasnya)
@@ -390,7 +392,7 @@ export default function AdminPanel({ editPersonId, onSuccess }: AdminPanelProps)
                   <label className="block text-[10px] font-semibold text-muted mb-0.5">Status Pernikahan</label>
                   <select
                     value={marriageStatus}
-                    onChange={(e) => setMarriageStatus(e.target.value as any)}
+                    onChange={(e) => setMarriageStatus(e.target.value as 'married' | 'widowed' | 'divorced')}
                     className="w-full px-2.5 py-1.5 rounded-lg border border-border bg-card text-foreground font-semibold"
                   >
                     <option value="married">Menikah</option>

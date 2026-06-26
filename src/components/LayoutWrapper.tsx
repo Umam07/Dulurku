@@ -15,8 +15,7 @@ import {
   Sun, 
   Moon, 
   ShieldAlert, 
-  ShieldCheck,
-  User
+  ShieldCheck
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -44,9 +43,9 @@ export const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
     }
   }, [isAuthenticated, router]);
 
-  // Handle Dark Mode initial state and changes
   useEffect(() => {
     const isDark = document.documentElement.classList.contains('dark');
+    /* eslint-disable-next-line react-hooks/set-state-in-effect */
     setDarkMode(isDark);
   }, []);
 
