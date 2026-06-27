@@ -251,16 +251,26 @@ export default function FamilyTree() {
             minChildX = Math.min(minChildX, targetConnectX);
             maxChildX = Math.max(maxChildX, targetConnectX);
 
-            // Garis langsung (diagonal) dari anak ke titik kumpul induk
+            // Garis tegak naik dari anak ke palang horizontal
             treeEdges.push({
               id: `edge-child-up-${childId}`,
-              d: `M ${targetConnectX} ${childY} L ${adjustedCenterX} ${horizontalBarY}`,
+              d: `M ${targetConnectX} ${childY} L ${targetConnectX} ${horizontalBarY}`,
               type: 'parent-child',
               branch
             });
 
             childLeftX += childWidth;
           });
+
+          // Gambar palang horizontal penghubung jika ada lebih dari satu cabang anak
+          if (minChildX !== Infinity && maxChildX !== -Infinity) {
+            treeEdges.push({
+              id: `edge-horizontal-bar-${husband.id}`,
+              d: `M ${minChildX} ${horizontalBarY} L ${maxChildX} ${horizontalBarY}`,
+              type: 'parent-child',
+              branch
+            });
+          }
         }
       } else {
         // Anggota Lajang / Single Parent tanpa pasangan tercatat saat ini
@@ -305,16 +315,24 @@ export default function FamilyTree() {
             minChildX = Math.min(minChildX, targetConnectX);
             maxChildX = Math.max(maxChildX, targetConnectX);
 
-            // Garis langsung (diagonal) dari anak ke titik kumpul induk
             treeEdges.push({
               id: `edge-child-up-${childId}`,
-              d: `M ${targetConnectX} ${childY} L ${adjustedCenterX} ${horizontalBarY}`,
+              d: `M ${targetConnectX} ${childY} L ${targetConnectX} ${horizontalBarY}`,
               type: 'parent-child',
               branch
             });
 
             childLeftX += childWidth;
           });
+
+          if (minChildX !== Infinity && maxChildX !== -Infinity) {
+            treeEdges.push({
+              id: `edge-horizontal-bar-${person.id}`,
+              d: `M ${minChildX} ${horizontalBarY} L ${maxChildX} ${horizontalBarY}`,
+              type: 'parent-child',
+              branch
+            });
+          }
         }
       }
     };
