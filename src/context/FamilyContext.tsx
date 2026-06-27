@@ -51,66 +51,9 @@ interface FamilyContextType extends FamilyState {
 
 const FamilyContext = createContext<FamilyContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'dulurku_family_state_v2';
 const AUTH_KEY = 'dulurku_auth_status';
 const ADMIN_KEY = 'dulurku_admin_mode';
 const INVITE_CODE = 'DULURGUYUB';
-
-// Fungsi sinkronisasi pintar untuk menggabungkan pembaruan initialData (dari developer/code)
-// dengan data kustom hasil input pengguna di browser agar tidak hilang saat di-refresh.
-const mergeInitialData = (stored: FamilyState): FamilyState => {
-  const initialMemberIds = new Set(initialMembers.map(m => m.id));
-  const initialRelIds = new Set(initialRelationships.map(r => r.id));
-  const initialEventIds = new Set(initialEvents.map(e => e.id));
-  const initialAnnIds = new Set(initialAnnouncements.map(a => a.id));
-  const initialGuestIds = new Set(initialGuestbook.map(g => g.id));
-
-  // 1. Sinkronisasi Anggota Keluarga (Members)
-  // Pertahankan anggota kustom yang ditambahkan oleh user (ID tidak terdaftar di initialMembers)
-  const userMembers = (stored.members || []).filter(m => !initialMemberIds.has(m.id));
-  // Tindih/update anggota bawaan dengan versi kode terbaru, lalu gabungkan dengan anggota buatan user
-  const mergedMembers = [...initialMembers, ...userMembers];
-
-  // 2. Sinkronisasi Hubungan Pernikahan (Spouse Relationships)
-  const userRels = (stored.relationships || []).filter(r => !initialRelIds.has(r.id));
-  const mergedRels = [...initialRelationships, ...userRels];
-
-  // 3. Sinkronisasi Hubungan Orang Tua - Anak (Parent-Child Relations)
-  const mergedParentChild = [...initialParentChildRelations];
-  (stored.parentChildRelations || []).forEach(storedPc => {
-    // Relasi kustom buatan user dipertahankan (jika melibatkan setidaknya satu anggota kustom)
-    const isUserRelation = !initialMemberIds.has(storedPc.parentId) || !initialMemberIds.has(storedPc.childId);
-    if (isUserRelation) {
-      const alreadyExists = mergedParentChild.some(
-        pc => pc.parentId === storedPc.parentId && pc.childId === storedPc.childId
-      );
-      if (!alreadyExists) {
-        mergedParentChild.push(storedPc);
-      }
-    }
-  });
-
-  // 4. Sinkronisasi Kalender Acara
-  const userEvents = (stored.events || []).filter(e => !initialEventIds.has(e.id));
-  const mergedEvents = [...initialEvents, ...userEvents];
-
-  // 5. Sinkronisasi Pengumuman (Announcements)
-  const userAnns = (stored.announcements || []).filter(a => !initialAnnIds.has(a.id));
-  const mergedAnns = [...userAnns, ...initialAnnouncements]; // Pengumuman kustom tetap di atas
-
-  // 6. Sinkronisasi Buku Tamu (Guestbook)
-  const userGuests = (stored.guestbook || []).filter(g => !initialGuestIds.has(g.id));
-  const mergedGuestbook = [...userGuests, ...initialGuestbook]; // Ucapan kustom tetap di atas
-
-  return {
-    members: mergedMembers,
-    relationships: mergedRels,
-    parentChildRelations: mergedParentChild,
-    events: mergedEvents,
-    announcements: mergedAnns,
-    guestbook: mergedGuestbook
-  };
-};
 
 export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<FamilyState>({
@@ -126,70 +69,38 @@ export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load & Sync state dari localStorage saat aplikasi dijalankan
+  // Load state dari SQLite via API saat pertama kali dimuat
   useEffect(() => {
     /* eslint-disable react-hooks/set-state-in-effect */
-    try {
-      let storedState = localStorage.getItem(STORAGE_KEY);
-      
-      // Migrasi data silsilah dari versi v1 ke v2 secara transparan jika ada
-      if (!storedState) {
-        const oldState = localStorage.getItem('dulurku_family_state_v1');
-        if (oldState) {
-          storedState = oldState;
-          localStorage.removeItem('dulurku_family_state_v1'); // Bersihkan v1
+    const loadState = async () => {
+      try {
+        const res = await fetch('/api/db');
+        if (res.ok) {
+          const syncedState = await res.json();
+          setState(syncedState);
+        } else {
+          console.error('Failed to load family state from database API');
         }
+      } catch (error) {
+        console.error('API load error:', error);
+      } finally {
+        setIsLoaded(true);
       }
+    };
 
-      if (storedState) {
-        const parsed = JSON.parse(storedState);
-        
-        // Gabungkan/Sinkronkan data statis terbaru dari code dengan data input user
-        const syncedState = mergeInitialData(parsed);
-        setState(syncedState);
-        
-        // Simpan hasil gabungan kembali ke localStorage
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(syncedState));
-      } else {
-        // Inisialisasi pertama kali menggunakan benih data silsilah bawaan
-        const initialState: FamilyState = {
-          members: initialMembers,
-          relationships: initialRelationships,
-          parentChildRelations: initialParentChildRelations,
-          events: initialEvents,
-          announcements: initialAnnouncements,
-          guestbook: initialGuestbook
-        };
-        setState(initialState);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialState));
-      }
-
-      const storedAuth = localStorage.getItem(AUTH_KEY);
-      if (storedAuth === 'true') {
-        setIsAuthenticated(true);
-      }
-
-      const storedAdmin = localStorage.getItem(ADMIN_KEY);
-      if (storedAdmin === 'true') {
-        setIsAdmin(true);
-      }
-    } catch (error) {
-      console.error('Failed to load family state from localStorage', error);
-    } finally {
-      setIsLoaded(true);
+    const storedAuth = localStorage.getItem(AUTH_KEY);
+    if (storedAuth === 'true') {
+      setIsAuthenticated(true);
     }
+
+    const storedAdmin = localStorage.getItem(ADMIN_KEY);
+    if (storedAdmin === 'true') {
+      setIsAdmin(true);
+    }
+
+    loadState();
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
-
-  // Save state to localStorage whenever it changes, but only after initial load
-  useEffect(() => {
-    if (!isLoaded) return;
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (error) {
-      console.error('Failed to save family state to localStorage', error);
-    }
-  }, [state, isLoaded]);
 
   // Auth Actions
   const login = (code: string): boolean => {
@@ -220,55 +131,75 @@ export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
   };
 
-  // CRUD Members
+  // CRUD Members (SQLite-Backed)
   const addMember = (newPerson: Omit<Person, 'id'>): Person => {
     const id = generateId('p');
     const person: Person = { ...newPerson, id };
+    
+    // Update local state optimistically
     setState(prev => ({
       ...prev,
       members: [...prev.members, person]
     }));
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'addMember', payload: person })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('addMember error:', err));
+
     return person;
   };
 
   const updateMember = (id: string, updatedFields: Partial<Person>) => {
+    // Update local state optimistically
     setState(prev => ({
       ...prev,
       members: prev.members.map(m => m.id === id ? { ...m, ...updatedFields } : m)
     }));
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'updateMember', payload: { id, fields: updatedFields } })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('updateMember error:', err));
   };
 
   const deleteMember = (id: string) => {
+    // Update local state optimistically
     setState(prev => {
-      // Hapus anggota
       const members = prev.members.filter(m => m.id !== id);
-      
-      // Hapus hubungan pernikahan terkait
       const relationships = prev.relationships.filter(
         r => r.personIdA !== id && r.personIdB !== id
       );
-      
-      // Hapus hubungan orang tua - anak terkait
       const parentChildRelations = prev.parentChildRelations.filter(
         pc => pc.parentId !== id && pc.childId !== id
       );
-
-      // Hapus event ulang tahun terkait jika ada
       const events = prev.events.filter(e => e.personId !== id);
-
-      return {
-        ...prev,
-        members,
-        relationships,
-        parentChildRelations,
-        events
-      };
+      return { ...prev, members, relationships, parentChildRelations, events };
     });
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'deleteMember', payload: { id } })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('deleteMember error:', err));
   };
 
-  // CRUD Relationships
+  // CRUD Relationships (SQLite-Backed)
   const addRelationship = (newRel: Omit<Relationship, 'id'>) => {
-    // Cek jika sudah ada relasi serupa
     const exists = state.relationships.some(
       r => (r.personIdA === newRel.personIdA && r.personIdB === newRel.personIdB) ||
            (r.personIdA === newRel.personIdB && r.personIdB === newRel.personIdA)
@@ -277,17 +208,40 @@ export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     const id = generateId('r');
     const rel: Relationship = { ...newRel, id };
+    
+    // Update local state optimistically
     setState(prev => ({
       ...prev,
       relationships: [...prev.relationships, rel]
     }));
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'addRelationship', payload: rel })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('addRelationship error:', err));
   };
 
   const deleteRelationship = (id: string) => {
+    // Update local state optimistically
     setState(prev => ({
       ...prev,
       relationships: prev.relationships.filter(r => r.id !== id)
     }));
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'deleteRelationship', payload: { id } })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('deleteRelationship error:', err));
   };
 
   const addParentChildRelation = (parentId: string, childId: string) => {
@@ -296,82 +250,170 @@ export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     );
     if (exists) return;
 
+    // Update local state optimistically
     setState(prev => ({
       ...prev,
       parentChildRelations: [...prev.parentChildRelations, { parentId, childId }]
     }));
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'addParentChildRelation', payload: { parentId, childId } })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('addParentChildRelation error:', err));
   };
 
   const deleteParentChildRelation = (parentId: string, childId: string) => {
+    // Update local state optimistically
     setState(prev => ({
       ...prev,
       parentChildRelations: prev.parentChildRelations.filter(
         pc => !(pc.parentId === parentId && pc.childId === childId)
       )
     }));
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'deleteParentChildRelation', payload: { parentId, childId } })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('deleteParentChildRelation error:', err));
   };
 
-  // CRUD Events
+  // CRUD Events (SQLite-Backed)
   const addEvent = (newEvent: Omit<FamilyEvent, 'id'>) => {
     const id = generateId('e');
     const event: FamilyEvent = { ...newEvent, id };
+    
+    // Update local state optimistically
     setState(prev => ({
       ...prev,
       events: [...prev.events, event]
     }));
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'addEvent', payload: event })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('addEvent error:', err));
   };
 
   const deleteEvent = (id: string) => {
+    // Update local state optimistically
     setState(prev => ({
       ...prev,
       events: prev.events.filter(e => e.id !== id)
     }));
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'deleteEvent', payload: { id } })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('deleteEvent error:', err));
   };
 
-  // CRUD Announcements
+  // CRUD Announcements (SQLite-Backed)
   const addAnnouncement = (newAnn: Omit<Announcement, 'id' | 'date'>) => {
     const id = generateId('a');
-    const date = new Date().toISOString().split('T')[0]; // format YYYY-MM-DD
+    const date = new Date().toISOString().split('T')[0];
     const ann: Announcement = { ...newAnn, id, date };
+    
+    // Update local state optimistically
     setState(prev => ({
       ...prev,
-      announcements: [ann, ...prev.announcements] // Taruh paling atas
+      announcements: [ann, ...prev.announcements]
     }));
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'addAnnouncement', payload: ann })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('addAnnouncement error:', err));
   };
 
   const deleteAnnouncement = (id: string) => {
+    // Update local state optimistically
     setState(prev => ({
       ...prev,
       announcements: prev.announcements.filter(a => a.id !== id)
     }));
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'deleteAnnouncement', payload: { id } })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('deleteAnnouncement error:', err));
   };
 
-  // CRUD Guestbook
+  // CRUD Guestbook (SQLite-Backed)
   const addGuestbook = (newEntry: Omit<GuestbookEntry, 'id' | 'timestamp'>) => {
     const id = generateId('g');
-    
-    // Format waktu lokal: YYYY-MM-DD HH:mm
     const now = new Date();
     const pad = (n: number) => n.toString().padStart(2, '0');
     const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-    
     const entry: GuestbookEntry = { ...newEntry, id, timestamp };
+    
+    // Update local state optimistically
     setState(prev => ({
       ...prev,
-      guestbook: [entry, ...prev.guestbook] // Taruh paling atas
+      guestbook: [entry, ...prev.guestbook]
     }));
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'addGuestbook', payload: entry })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('addGuestbook error:', err));
   };
 
   const deleteGuestbook = (id: string) => {
+    // Update local state optimistically
     setState(prev => ({
       ...prev,
       guestbook: prev.guestbook.filter(g => g.id !== id)
     }));
+
+    // Sync to SQLite
+    fetch('/api/db', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'deleteGuestbook', payload: { id } })
+    })
+    .then(res => res.json())
+    .then(syncedState => setState(syncedState))
+    .catch(err => console.error('deleteGuestbook error:', err));
   };
 
-  // Tampilkan blank loading screen di awal sebelum state termuat dari localStorage
+  // Tampilkan blank loading screen di awal sebelum state termuat dari database
   if (!isLoaded) {
-    return null; // Atau spinner pemuatan sederhana
+    return null;
   }
 
   return (
