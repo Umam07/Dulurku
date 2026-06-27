@@ -31,6 +31,7 @@ interface Edge {
   id: string;
   d: string;
   type: 'marriage' | 'parent-child';
+  branch?: 'paternal' | 'maternal';
 }
 
 export default function FamilyTree() {
@@ -149,8 +150,8 @@ export default function FamilyTree() {
       }
     });
 
-    // Fungsi rekursif untuk meletakkan node-node keluarga besar
-    const positionFamily = (personId: string, leftX: number, y: number) => {
+    // Fungsi rekursif untuk meletakkan node-node keluarga besar dengan pelacakan cabang keluarga
+    const positionFamily = (personId: string, leftX: number, y: number, branch: 'paternal' | 'maternal') => {
       if (nodePositions[personId]) return;
       const spouseId = spouseMap[personId];
       if (spouseId && nodePositions[spouseId]) return;
@@ -198,7 +199,8 @@ export default function FamilyTree() {
         treeEdges.push({
           id: `edge-marriage-${marriageRelMap[person.id] || person.id}`,
           d: `M ${husbandX + NODE_WIDTH/2} ${marriageLineY} L ${wifeX - NODE_WIDTH/2} ${marriageLineY}`,
-          type: 'marriage'
+          type: 'marriage',
+          branch
         });
 
         // Letakkan anak-anak
@@ -224,7 +226,8 @@ export default function FamilyTree() {
           treeEdges.push({
             id: `edge-parent-down-${husband.id}`,
             d: `M ${adjustedCenterX} ${marriageLineY} L ${adjustedCenterX} ${horizontalBarY}`,
-            type: 'parent-child'
+            type: 'parent-child',
+            branch
           });
 
           // Lacak batas horizontal kiri dan kanan untuk menghubungkan semua anak
@@ -235,7 +238,7 @@ export default function FamilyTree() {
             const childWidth = subTreeWidths[childId] || NODE_WIDTH;
             
             // Letakkan anak (dan pasangannya secara rekursif)
-            positionFamily(childId, childLeftX, childY);
+            positionFamily(childId, childLeftX, childY, branch);
 
             // Dapatkan koordinat anak yang terpasang
             let targetConnectX = nodePositions[childId]?.x;
@@ -252,7 +255,8 @@ export default function FamilyTree() {
             treeEdges.push({
               id: `edge-child-up-${childId}`,
               d: `M ${targetConnectX} ${childY} L ${targetConnectX} ${horizontalBarY}`,
-              type: 'parent-child'
+              type: 'parent-child',
+              branch
             });
 
             childLeftX += childWidth;
@@ -263,7 +267,8 @@ export default function FamilyTree() {
             treeEdges.push({
               id: `edge-horizontal-bar-${husband.id}`,
               d: `M ${minChildX} ${horizontalBarY} L ${maxChildX} ${horizontalBarY}`,
-              type: 'parent-child'
+              type: 'parent-child',
+              branch
             });
           }
         }
@@ -291,7 +296,8 @@ export default function FamilyTree() {
           treeEdges.push({
             id: `edge-parent-down-${person.id}`,
             d: `M ${adjustedCenterX} ${parentConnectorY} L ${adjustedCenterX} ${horizontalBarY}`,
-            type: 'parent-child'
+            type: 'parent-child',
+            branch
           });
 
           let minChildX = Infinity;
@@ -299,7 +305,7 @@ export default function FamilyTree() {
 
           childLayoutIds.forEach((childId) => {
             const childWidth = subTreeWidths[childId] || NODE_WIDTH;
-            positionFamily(childId, childLeftX, childY);
+            positionFamily(childId, childLeftX, childY, branch);
 
             let targetConnectX = nodePositions[childId]?.x;
             if (!nodePositions[childId]) {
@@ -312,7 +318,8 @@ export default function FamilyTree() {
             treeEdges.push({
               id: `edge-child-up-${childId}`,
               d: `M ${targetConnectX} ${childY} L ${targetConnectX} ${horizontalBarY}`,
-              type: 'parent-child'
+              type: 'parent-child',
+              branch
             });
 
             childLeftX += childWidth;
@@ -322,7 +329,8 @@ export default function FamilyTree() {
             treeEdges.push({
               id: `edge-horizontal-bar-${person.id}`,
               d: `M ${minChildX} ${horizontalBarY} L ${maxChildX} ${horizontalBarY}`,
-              type: 'parent-child'
+              type: 'parent-child',
+              branch
             });
           }
         }
@@ -337,7 +345,9 @@ export default function FamilyTree() {
       
       if (root.id === primaryRootId) {
         const rootWidth = subTreeWidths[primaryRootId] || NODE_WIDTH;
-        positionFamily(primaryRootId, rootStartX, 50);
+        // Tentukan cabang keturunan berdasarkan ID root (paternal vs maternal)
+        const branch = root.id.includes('-m-') ? 'maternal' : 'paternal';
+        positionFamily(primaryRootId, rootStartX, 50, branch);
         rootStartX += rootWidth + 80; // Jarak antar pohon keluarga utama
       }
     });
@@ -570,17 +580,30 @@ export default function FamilyTree() {
               
               {layoutData.edges.map((edge) => {
                 const isMarriage = edge.type === 'marriage';
+                let strokeColor = '#78716C'; // default gray
+                
+                if (!isMarriage) {
+                  // Warna garis keturunan berdasarkan cabang keluarga (Brand colors)
+                  if (edge.branch === 'paternal') {
+                    strokeColor = '#B85C38'; // Terracotta (Pihak Ayah)
+                  } else if (edge.branch === 'maternal') {
+                    strokeColor = '#556B2F'; // Olive/Sage Green (Pihak Ibu)
+                  }
+                } else {
+                  strokeColor = '#D97706'; // Emas/Amber untuk Pernikahan
+                }
+
                 return (
                   <path
                     key={edge.id}
                     d={edge.d}
                     fill="none"
-                    stroke={isMarriage ? '#D97706' : '#78716C'}
-                    strokeWidth={isMarriage ? 2.5 : 1.75}
+                    stroke={strokeColor}
+                    strokeWidth={isMarriage ? 2.5 : 2.0}
                     strokeDasharray="none"
                     className="transition-all duration-300"
                     style={{
-                      opacity: isMarriage ? 1.0 : 0.65
+                      opacity: isMarriage ? 1.0 : 0.8
                     }}
                   />
                 );
@@ -730,19 +753,37 @@ export default function FamilyTree() {
         </div>
 
         {/* Floating Tree Legend (Bottom Left) - Polished Glassmorphism */}
-        <div className="hidden lg:flex absolute bottom-6 left-6 flex-col gap-2 bg-card/85 dark:bg-zinc-900/80 backdrop-blur border border-border/80 p-4 rounded-[20px] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.06)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.35)] z-10 text-[10px]">
+        <div className="hidden lg:flex absolute bottom-6 left-6 flex-col gap-2 bg-card/85 dark:bg-zinc-900/80 backdrop-blur border border-border/80 p-4 rounded-[20px] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.06)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.35)] z-10 text-[10px] w-52">
           <h5 className="font-bold text-foreground mb-1.5 flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 text-primary" /> Legenda Silsilah
           </h5>
-          {generationLegend.map((lg) => (
-            <div key={lg.label} className="flex items-center gap-2.5">
-              <span className={`h-3 w-6 rounded border ${lg.color.replace('border-2', 'border')}`}></span>
-              <span className="text-muted/95 font-bold">{lg.label}</span>
+          <div className="flex flex-col gap-1.5 mb-1.5 pb-1.5 border-b border-border/60">
+            <span className="font-bold text-foreground/80 text-[8.5px] uppercase tracking-wider mb-1">Tingkatan Generasi</span>
+            {generationLegend.map((lg) => (
+              <div key={lg.label} className="flex items-center gap-2.5">
+                <span className={`h-3 w-6 rounded border ${lg.color.replace('border-2', 'border')}`}></span>
+                <span className="text-muted/95 font-bold">{lg.label}</span>
+              </div>
+            ))}
+            <div className="flex items-center gap-2.5 mt-0.5">
+              <span className="h-3 w-6 rounded border border-dashed border-stone-400 bg-stone-100/50 dark:bg-stone-800/40"></span>
+              <span className="text-muted/95 font-bold">Almarhum / Wafat</span>
             </div>
-          ))}
-          <div className="flex items-center gap-2.5 mt-0.5">
-            <span className="h-3 w-6 rounded border border-dashed border-stone-400 bg-stone-100/50 dark:bg-stone-800/40"></span>
-            <span className="text-muted/95 font-bold">Almarhum / Wafat</span>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <span className="font-bold text-foreground/80 text-[8.5px] uppercase tracking-wider mb-1">Garis Hubungan</span>
+            <div className="flex items-center gap-2.5">
+              <span className="h-1.5 w-6 bg-[#B85C38] rounded-full"></span>
+              <span className="text-muted/95 font-bold">Keturunan Ayah (Mbah Hardjo)</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <span className="h-1.5 w-6 bg-[#556B2F] rounded-full"></span>
+              <span className="text-muted/95 font-bold">Keturunan Ibu (Mbah Sastro)</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <span className="h-1.5 w-6 bg-[#D97706] rounded-full"></span>
+              <span className="text-muted/95 font-bold">Ikatan Pernikahan (Pasutri)</span>
+            </div>
           </div>
         </div>
 
