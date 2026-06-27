@@ -575,12 +575,12 @@ export default function FamilyTree() {
                     key={edge.id}
                     d={edge.d}
                     fill="none"
-                    stroke={isMarriage ? '#F59E0B' : '#94A3B8'}
-                    strokeWidth={isMarriage ? 2.25 : 1.5}
+                    stroke={isMarriage ? '#D97706' : '#78716C'}
+                    strokeWidth={isMarriage ? 2.5 : 1.75}
                     strokeDasharray="none"
                     className="transition-all duration-300"
                     style={{
-                      opacity: isMarriage ? 0.8 : 0.4
+                      opacity: isMarriage ? 1.0 : 0.65
                     }}
                   />
                 );
@@ -597,28 +597,28 @@ export default function FamilyTree() {
               const isFilteredIn = filteredMemberIds.includes(member.id);
               const isMe = member.id === 'p-g2-umam';
               
-              // Premium Gen Styles (Doppelrand / Double-Bezel outer shells)
-              let outerStyles = 'border-emerald-500/20 bg-gradient-to-b from-emerald-500/8 to-emerald-500/3 dark:from-emerald-500/15 dark:to-emerald-500/3 shadow-[0_4px_20px_-5px_rgba(16,185,129,0.03)] dark:shadow-[0_4px_25px_-5px_rgba(16,185,129,0.15)]';
+              // Premium Gen Styles (Doppelrand / Double-Bezel outer shells - High Contrast & Bright)
+              let outerStyles = 'border-emerald-400 bg-emerald-100/95 dark:border-emerald-500/50 dark:bg-emerald-950/30 shadow-[0_4px_12px_rgba(16,185,129,0.12)] dark:shadow-[0_4px_25px_-5px_rgba(16,185,129,0.25)]';
               
               if (member.generation === 0) {
                 // Sesepuh
-                outerStyles = 'border-amber-500/20 bg-gradient-to-b from-amber-500/8 to-amber-500/3 dark:from-amber-500/15 dark:to-amber-500/3 shadow-[0_4px_20px_-5px_rgba(245,158,11,0.03)] dark:shadow-[0_4px_25px_-5px_rgba(245,158,11,0.15)]';
+                outerStyles = 'border-amber-400 bg-amber-100/95 dark:border-amber-500/50 dark:bg-amber-950/30 shadow-[0_4px_12px_rgba(245,158,11,0.12)] dark:shadow-[0_4px_25px_-5px_rgba(245,158,11,0.25)]';
               } else if (member.generation === 2) {
                 // Cucu
-                outerStyles = 'border-indigo-500/20 bg-gradient-to-b from-indigo-500/8 to-indigo-500/3 dark:from-indigo-500/15 dark:to-indigo-500/3 shadow-[0_4px_20px_-5px_rgba(99,102,241,0.03)] dark:shadow-[0_4px_25px_-5px_rgba(99,102,241,0.15)]';
+                outerStyles = 'border-indigo-400 bg-indigo-100/95 dark:border-indigo-500/50 dark:bg-indigo-950/30 shadow-[0_4px_12px_rgba(99,102,241,0.12)] dark:shadow-[0_4px_25px_-5px_rgba(99,102,241,0.25)]';
               } else if (member.generation === 3) {
                 // Cicit
-                outerStyles = 'border-rose-400/20 bg-gradient-to-b from-rose-500/8 to-rose-500/3 dark:from-rose-500/15 dark:to-rose-500/3 shadow-[0_4px_20px_-5px_rgba(244,63,94,0.03)] dark:shadow-[0_4px_25px_-5px_rgba(244,63,94,0.15)]';
+                outerStyles = 'border-rose-400 bg-rose-100/95 dark:border-rose-400/50 dark:bg-rose-950/30 shadow-[0_4px_12px_rgba(244,63,94,0.12)] dark:shadow-[0_4px_25px_-5px_rgba(244,63,94,0.25)]';
               }
 
               // Special highlight for Developer/User (Umam)
               if (isMe) {
-                outerStyles = 'border-primary/50 bg-gradient-to-b from-primary/20 to-indigo-500/8 dark:from-primary/30 dark:to-indigo-500/8 shadow-[0_0_20px_-2px_rgba(20,184,166,0.12)] dark:shadow-[0_0_25px_-2px_rgba(20,184,166,0.35)]';
+                outerStyles = 'border-primary bg-primary/20 dark:border-primary dark:bg-primary/30 shadow-[0_0_20px_rgba(20,184,166,0.2)] dark:shadow-[0_0_25px_rgba(20,184,166,0.45)]';
               }
 
               // Styling jika almarhum
               if (isDeceased) {
-                outerStyles = 'border-dashed border-stone-300 dark:border-stone-700 bg-stone-100/20 dark:bg-stone-900/20 opacity-60 shadow-none';
+                outerStyles = 'border-dashed border-stone-400 bg-stone-200/80 dark:border-stone-600 dark:bg-stone-850/40 opacity-70 shadow-none';
               }
 
               // Highlight pencarian
@@ -633,18 +633,18 @@ export default function FamilyTree() {
                     top: pos.y,
                     width: NODE_WIDTH,
                     height: NODE_HEIGHT,
-                    opacity: isFilteredIn ? 1.0 : 0.15,
+                    opacity: isFilteredIn ? 1.0 : 0.3,
                     pointerEvents: 'auto'
                   }}
-                  className={`absolute p-[5px] rounded-[24px] border backdrop-blur-md flex flex-col cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)] group hover:-translate-y-1 hover:scale-[1.02] ${outerStyles} ${
+                  className={`absolute p-[5px] rounded-[24px] border-2 flex flex-col cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)] group hover:-translate-y-1 hover:scale-[1.02] ${outerStyles} ${
                     isSearched 
-                      ? 'ring-4 ring-amber-400/60 dark:ring-amber-500/50 scale-105 z-30 shadow-lg' 
-                      : 'hover:shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)]'
+                      ? 'ring-4 ring-amber-400 dark:ring-amber-500/50 scale-105 z-30 shadow-lg' 
+                      : 'hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.3)]'
                   }`}
                 >
-                  {/* Nested Core (Doppelrand Inner Shell) */}
-                  <div className={`w-full h-full p-2.5 rounded-[18px] bg-card/95 dark:bg-zinc-900/95 shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.02)] flex flex-col justify-between transition-colors duration-300 group-hover:bg-card dark:group-hover:bg-zinc-900 ${
-                    isDeceased ? 'bg-stone-50/50 dark:bg-stone-950/40' : ''
+                  {/* Nested Core (Doppelrand Inner Shell - Bright Solid White background in light mode) */}
+                  <div className={`w-full h-full p-2.5 rounded-[18px] bg-white dark:bg-zinc-900 shadow-[inset_0_1px_1px_rgba(255,255,255,1)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.03)] flex flex-col justify-between transition-colors duration-300 group-hover:bg-zinc-50 dark:group-hover:bg-zinc-900/90 ${
+                    isDeceased ? 'bg-stone-50/90 dark:bg-stone-950/90' : ''
                   }`}>
                     <div className="min-w-0">
                       <div className="flex justify-between items-start gap-1">
