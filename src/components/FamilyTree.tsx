@@ -15,12 +15,12 @@ import {
 } from 'lucide-react';
 import MemberDetail from '@/components/MemberDetail';
 
-// Dimensi node silsilah
-const NODE_WIDTH = 180;
-const NODE_HEIGHT = 92;
-const SPOUSE_GAP = 230; // Jarak antar pusat pasangan
-const SIBLING_GAP = 50;
-const GEN_GAP = 250; // Jarak antar generasi (Y axis)
+// Dimensi node silsilah (spacious, high-end visual grid)
+const NODE_WIDTH = 210;
+const NODE_HEIGHT = 104;
+const SPOUSE_GAP = 260; // Jarak antar pusat pasangan
+const SIBLING_GAP = 60;
+const GEN_GAP = 270; // Jarak antar generasi (Y axis)
 
 interface Position {
   x: number;
@@ -483,30 +483,30 @@ export default function FamilyTree() {
 
   return (
     <div className="h-[calc(100vh-140px)] flex flex-col space-y-4 animate-in fade-in duration-300">
-      {/* Search & Filter Header Bar */}
-      <div className="bg-card border border-border p-4 rounded-2xl shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center z-20">
-        <form onSubmit={handleSearch} className="relative w-full md:w-80">
+      {/* Search & Filter Header Bar - Glassmorphism Dock */}
+      <div className="backdrop-blur-md bg-card/85 dark:bg-zinc-900/80 border border-border/80 p-4 rounded-[24px] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.3)] flex flex-col md:flex-row gap-4 justify-between items-center z-20 transition-all duration-300">
+        <form onSubmit={handleSearch} className="relative w-full md:w-80 group">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari nama dulur (misal: Siti, Rudi)..."
-            className="w-full pl-10 pr-4 py-2 text-xs font-semibold rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent transition-all"
+            className="w-full pl-10 pr-4 py-2.5 text-xs font-bold rounded-xl border border-border/80 bg-background/50 text-foreground placeholder:text-muted/70 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary/80 transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]"
           />
-          <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-muted" />
+          <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted/65 group-focus-within:text-primary transition-colors" />
         </form>
 
-        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-wrap items-center gap-4 w-full md:w-auto justify-end">
           {/* Filter Kota */}
-          <div className="flex items-center gap-2 text-xs">
-            <span className="font-semibold text-muted flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> Domisili:</span>
+          <div className="flex items-center gap-2.5 text-xs">
+            <span className="font-bold text-muted/95 flex items-center gap-1.5"><MapPin className="h-4 w-4 text-primary/70" /> Domisili:</span>
             <select
               value={selectedDomicile}
               onChange={(e) => setSelectedDomicile(e.target.value)}
-              className="px-3 py-1.5 rounded-lg border border-border bg-background text-foreground font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
+              className="px-3 py-1.5 rounded-xl border border-border/80 bg-background/50 text-foreground font-bold text-xs focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer hover:border-primary/50 transition-colors"
             >
               {domiciles.map(city => (
-                <option key={city} value={city}>
+                <option key={city} value={city} className="bg-card font-bold text-xs text-foreground">
                   {city === 'all' ? 'Semua Kota' : city}
                 </option>
               ))}
@@ -516,20 +516,20 @@ export default function FamilyTree() {
           {/* Toggle Rantau */}
           <button
             onClick={() => setHighlightRantau(!highlightRantau)}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all duration-300 flex items-center gap-2 cursor-pointer shadow-sm hover:scale-[1.02] active:scale-[0.98] ${
               highlightRantau 
-                ? 'bg-secondary/15 text-secondary border-secondary/35' 
-                : 'border-border text-muted hover:text-foreground hover:bg-background'
+                ? 'bg-secondary/15 text-secondary border-secondary/40 shadow-inner' 
+                : 'border-border/80 text-muted hover:text-foreground hover:bg-background/80 hover:border-primary/40'
             }`}
           >
-            <Map className="h-3.5 w-3.5" />
+            <Map className="h-4 w-4" />
             <span>Tampilkan Perantau</span>
           </button>
         </div>
       </div>
 
       {/* Interactive Tree Canvas Container */}
-      <div className="flex-1 border border-border rounded-3xl overflow-hidden bg-card/60 relative select-none shadow-inner">
+      <div className="flex-1 border border-border/80 rounded-[32px] overflow-hidden bg-card/40 dark:bg-zinc-950/20 relative select-none shadow-[inset_0_4px_30px_rgba(0,0,0,0.02)] dark:shadow-[inset_0_4px_35px_rgba(0,0,0,0.2)]">
         {/* Canvas Grid Background */}
         <div 
           ref={containerRef}
@@ -538,7 +538,7 @@ export default function FamilyTree() {
           onMouseUp={handleMouseUpOrLeave}
           onMouseLeave={handleMouseUpOrLeave}
           onWheel={handleWheel}
-          className={`w-full h-full cursor-grab active:cursor-grabbing tree-grid-bg relative overflow-hidden`}
+          className={`w-full h-full cursor-grab active:cursor-grabbing tree-grid-bg relative overflow-hidden transition-colors duration-300`}
         >
           {/* SVG & NODES WRAPPER WITH TRANSFORM */}
           <div 
@@ -597,31 +597,28 @@ export default function FamilyTree() {
               const isFilteredIn = filteredMemberIds.includes(member.id);
               const isMe = member.id === 'p-g2-umam';
               
-              // Premium Gen Styles
-              let genStyles = 'border-emerald-500/60 bg-emerald-500/5 hover:bg-emerald-500/10 text-foreground shadow-sm';
-              let badgeColor = 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400';
+              // Premium Gen Styles (Doppelrand / Double-Bezel outer shells)
+              let outerStyles = 'border-emerald-500/20 bg-gradient-to-b from-emerald-500/8 to-emerald-500/3 dark:from-emerald-500/15 dark:to-emerald-500/3 shadow-[0_4px_20px_-5px_rgba(16,185,129,0.03)] dark:shadow-[0_4px_25px_-5px_rgba(16,185,129,0.15)]';
               
               if (member.generation === 0) {
-                genStyles = 'border-amber-500 bg-amber-500/5 hover:bg-amber-500/10 text-foreground shadow-amber-500/5';
-                badgeColor = 'bg-amber-500/10 text-amber-600 dark:text-amber-400';
+                // Sesepuh
+                outerStyles = 'border-amber-500/20 bg-gradient-to-b from-amber-500/8 to-amber-500/3 dark:from-amber-500/15 dark:to-amber-500/3 shadow-[0_4px_20px_-5px_rgba(245,158,11,0.03)] dark:shadow-[0_4px_25px_-5px_rgba(245,158,11,0.15)]';
               } else if (member.generation === 2) {
-                genStyles = 'border-indigo-500 bg-indigo-500/5 hover:bg-indigo-500/10 text-foreground shadow-indigo-500/5';
-                badgeColor = 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400';
+                // Cucu
+                outerStyles = 'border-indigo-500/20 bg-gradient-to-b from-indigo-500/8 to-indigo-500/3 dark:from-indigo-500/15 dark:to-indigo-500/3 shadow-[0_4px_20px_-5px_rgba(99,102,241,0.03)] dark:shadow-[0_4px_25px_-5px_rgba(99,102,241,0.15)]';
               } else if (member.generation === 3) {
-                genStyles = 'border-rose-400 bg-rose-500/5 hover:bg-rose-500/10 text-foreground shadow-rose-500/5';
-                badgeColor = 'bg-rose-500/10 text-rose-500 dark:text-rose-400';
+                // Cicit
+                outerStyles = 'border-rose-400/20 bg-gradient-to-b from-rose-500/8 to-rose-500/3 dark:from-rose-500/15 dark:to-rose-500/3 shadow-[0_4px_20px_-5px_rgba(244,63,94,0.03)] dark:shadow-[0_4px_25px_-5px_rgba(244,63,94,0.15)]';
               }
 
               // Special highlight for Developer/User (Umam)
               if (isMe) {
-                genStyles = 'border-primary bg-gradient-to-br from-primary/10 to-indigo-500/15 dark:from-primary/20 dark:to-indigo-500/25 text-foreground ring-2 ring-primary/40 shadow-[0_0_15px_rgba(20,184,166,0.25)] hover:shadow-[0_0_20px_rgba(20,184,166,0.4)] hover:scale-105 z-20';
-                badgeColor = 'bg-primary/20 text-primary dark:text-primary-light';
+                outerStyles = 'border-primary/50 bg-gradient-to-b from-primary/20 to-indigo-500/8 dark:from-primary/30 dark:to-indigo-500/8 shadow-[0_0_20px_-2px_rgba(20,184,166,0.12)] dark:shadow-[0_0_25px_-2px_rgba(20,184,166,0.35)]';
               }
 
               // Styling jika almarhum
               if (isDeceased) {
-                genStyles = 'border-dashed border-stone-400 dark:border-stone-600 bg-stone-50/50 dark:bg-stone-900/40 text-stone-500 dark:text-stone-400 opacity-60 hover:opacity-80 shadow-none';
-                badgeColor = 'bg-stone-500/10 text-stone-500 dark:text-stone-400';
+                outerStyles = 'border-dashed border-stone-300 dark:border-stone-700 bg-stone-100/20 dark:bg-stone-900/20 opacity-60 shadow-none';
               }
 
               // Highlight pencarian
@@ -636,55 +633,62 @@ export default function FamilyTree() {
                     top: pos.y,
                     width: NODE_WIDTH,
                     height: NODE_HEIGHT,
-                    opacity: isFilteredIn ? 1.0 : 0.2,
+                    opacity: isFilteredIn ? 1.0 : 0.15,
                     pointerEvents: 'auto'
                   }}
-                  className={`absolute p-3 rounded-2xl border-2 backdrop-blur-md flex flex-col justify-between cursor-pointer transition-all duration-300 ${genStyles} ${
+                  className={`absolute p-[5px] rounded-[24px] border backdrop-blur-md flex flex-col cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)] group hover:-translate-y-1 hover:scale-[1.02] ${outerStyles} ${
                     isSearched 
-                      ? 'ring-4 ring-amber-400 animate-pulse scale-105 shadow-amber-200 dark:shadow-amber-950/20 z-30' 
-                      : 'hover:-translate-y-0.5'
+                      ? 'ring-4 ring-amber-400/60 dark:ring-amber-500/50 scale-105 z-30 shadow-lg' 
+                      : 'hover:shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)]'
                   }`}
                 >
-                  <div className="min-w-0">
-                    <div className="flex justify-between items-start gap-1">
-                      <h4 className="text-xs font-bold font-serif truncate leading-tight flex-1 text-foreground">
-                        {member.nickname || member.name}
-                      </h4>
-                      <div className="flex items-center gap-1">
+                  {/* Nested Core (Doppelrand Inner Shell) */}
+                  <div className={`w-full h-full p-2.5 rounded-[18px] bg-card/95 dark:bg-zinc-900/95 shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.02)] flex flex-col justify-between transition-colors duration-300 group-hover:bg-card dark:group-hover:bg-zinc-900 ${
+                    isDeceased ? 'bg-stone-50/50 dark:bg-stone-950/40' : ''
+                  }`}>
+                    <div className="min-w-0">
+                      <div className="flex justify-between items-start gap-1">
+                        <h4 className="text-[12px] font-bold font-serif truncate leading-tight flex-1 text-foreground tracking-wide group-hover:text-primary transition-colors">
+                          {member.nickname || member.name}
+                        </h4>
+                        <div className="flex items-center gap-1">
+                          <span className={`text-[8px] font-extrabold h-4 w-4 rounded-full border flex items-center justify-center flex-shrink-0 ${
+                            isFemale 
+                              ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/25' 
+                              : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/25'
+                          }`}>
+                            {member.gender === 'M' ? 'L' : 'P'}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <p className="text-[8.5px] text-muted truncate mt-0.5 max-w-full font-bold tracking-wider uppercase scale-95 origin-left opacity-75">
+                        {member.name}
+                      </p>
+                    </div>
+
+                    <div className="flex justify-between items-center mt-1.5 pt-1.5 border-t border-border/60 text-[8.5px]">
+                      <span className="truncate font-bold text-muted/95 leading-none flex items-center gap-0.5">
+                        <MapPin className="h-3 w-3 text-muted/60" /> {member.domicile}
+                      </span>
+                      <div className="flex gap-1 items-center">
                         {isMe && (
-                          <span className="text-[7px] font-extrabold px-1 py-0.5 rounded bg-primary/20 text-primary dark:text-primary-light uppercase tracking-wider animate-pulse flex items-center gap-0.5">
+                          <span className="text-[7px] font-extrabold px-1.5 py-0.5 rounded border bg-primary/20 text-primary dark:text-primary-light border-primary/30 uppercase tracking-wider animate-pulse flex items-center gap-0.5">
                             ✨ Dev
                           </span>
                         )}
-                        <span className={`text-[8px] font-extrabold h-4 w-4 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          isFemale 
-                            ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400' 
-                            : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                        }`}>
-                          {member.gender === 'M' ? 'L' : 'P'}
-                        </span>
+                        {member.isMerantau && !isDeceased && (
+                          <span className="px-1.5 py-0.5 rounded border border-secondary/25 bg-secondary-light dark:bg-secondary/10 text-secondary dark:text-secondary-hover font-bold text-[7px] leading-none uppercase tracking-wider scale-90 origin-right">
+                            Rantau
+                          </span>
+                        )}
+                        {isDeceased && (
+                          <span className="font-extrabold text-[7.5px] leading-none text-stone-400 dark:text-stone-500 uppercase tracking-wider">
+                            Wafat
+                          </span>
+                        )}
                       </div>
                     </div>
-                    
-                    <p className="text-[9px] text-muted truncate mt-0.5 max-w-full font-medium">
-                      {member.name}
-                    </p>
-                  </div>
-
-                  <div className="flex justify-between items-center mt-1 pt-1.5 border-t border-border text-[9px]">
-                    <span className="truncate font-semibold max-w-[95px] text-muted/90 leading-none flex items-center gap-0.5">
-                      📍 {member.domicile}
-                    </span>
-                    {member.isMerantau && !isDeceased && (
-                      <span className="px-1 py-0.5 rounded bg-secondary-light dark:bg-secondary/15 text-secondary dark:text-secondary-hover font-bold text-[7px] leading-none uppercase tracking-wider scale-90 origin-right">
-                        Rantau
-                      </span>
-                    )}
-                    {isDeceased && (
-                      <span className="font-bold text-[7.5px] leading-none text-stone-400 dark:text-stone-500 uppercase tracking-wider">
-                        Wafat
-                      </span>
-                    )}
                   </div>
                 </div>
               );
@@ -692,53 +696,53 @@ export default function FamilyTree() {
           </div>
         </div>
 
-        {/* Floating Interactive Canvas Controls (Bottom Right) */}
-        <div className="absolute bottom-6 right-6 flex flex-col gap-2 z-10 bg-card/90 backdrop-blur border border-border p-2 rounded-2xl shadow-lg">
+        {/* Floating Interactive Canvas Controls (Bottom Right) - Polished Glassmorphism */}
+        <div className="absolute bottom-6 right-6 flex flex-col gap-2.5 z-10 bg-card/85 dark:bg-zinc-900/80 backdrop-blur border border-border/80 p-2.5 rounded-[20px] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.06)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
           <button 
             onClick={handleCenterOnMe} 
             title="Temukan Saya (Umam)" 
-            className="p-2 rounded-xl hover:bg-primary/10 text-primary transition-all cursor-pointer flex items-center justify-center border border-primary/20 bg-primary/5 hover:scale-105"
+            className="p-2.5 rounded-xl hover:bg-primary/10 text-primary border border-primary/25 bg-primary/5 hover:scale-[1.05] active:scale-[0.95] transition-all cursor-pointer flex items-center justify-center"
           >
-            <User className="h-5 w-5" />
+            <User className="h-4.5 w-4.5" />
           </button>
-          <div className="h-px bg-border my-1" />
+          <div className="h-px bg-border/80" />
           <button 
             onClick={handleZoomIn} 
             title="Perbesar" 
-            className="p-2 rounded-xl hover:bg-background text-muted hover:text-foreground transition-all cursor-pointer"
+            className="p-2.5 rounded-xl hover:bg-background/80 hover:text-foreground text-muted transition-all active:scale-[0.93] cursor-pointer"
           >
-            <ZoomIn className="h-5 w-5" />
+            <ZoomIn className="h-4.5 w-4.5" />
           </button>
           <button 
             onClick={handleZoomOut} 
             title="Perkecil" 
-            className="p-2 rounded-xl hover:bg-background text-muted hover:text-foreground transition-all cursor-pointer"
+            className="p-2.5 rounded-xl hover:bg-background/80 hover:text-foreground text-muted transition-all active:scale-[0.93] cursor-pointer"
           >
-            <ZoomOut className="h-5 w-5" />
+            <ZoomOut className="h-4.5 w-4.5" />
           </button>
           <button 
             onClick={handleReset} 
             title="Reset Tampilan" 
-            className="p-2 rounded-xl hover:bg-background text-muted hover:text-foreground transition-all cursor-pointer"
+            className="p-2.5 rounded-xl hover:bg-background/80 hover:text-foreground text-muted transition-all active:scale-[0.93] cursor-pointer"
           >
-            <RotateCcw className="h-5 w-5" />
+            <RotateCcw className="h-4.5 w-4.5" />
           </button>
         </div>
 
-        {/* Floating Tree Legend (Bottom Left) */}
-        <div className="hidden lg:flex absolute bottom-6 left-6 flex-col gap-1.5 bg-card/90 backdrop-blur border border-border p-3.5 rounded-2xl shadow-lg z-10 text-[10px]">
-          <h5 className="font-bold text-foreground mb-1 flex items-center gap-1">
-            <Sparkles className="h-3 w-3 text-primary" /> Legenda Silsilah
+        {/* Floating Tree Legend (Bottom Left) - Polished Glassmorphism */}
+        <div className="hidden lg:flex absolute bottom-6 left-6 flex-col gap-2 bg-card/85 dark:bg-zinc-900/80 backdrop-blur border border-border/80 p-4 rounded-[20px] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.06)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.35)] z-10 text-[10px]">
+          <h5 className="font-bold text-foreground mb-1.5 flex items-center gap-1.5">
+            <Sparkles className="h-3.5 w-3.5 text-primary" /> Legenda Silsilah
           </h5>
           {generationLegend.map((lg) => (
-            <div key={lg.label} className="flex items-center gap-2">
-              <span className={`h-3 w-6 rounded border-2 ${lg.color}`}></span>
-              <span className="text-muted font-semibold">{lg.label}</span>
+            <div key={lg.label} className="flex items-center gap-2.5">
+              <span className={`h-3 w-6 rounded border ${lg.color.replace('border-2', 'border')}`}></span>
+              <span className="text-muted/95 font-bold">{lg.label}</span>
             </div>
           ))}
-          <div className="flex items-center gap-2 mt-0.5">
-            <span className="h-3 w-6 rounded border border-dashed border-stone-400 bg-stone-100 dark:bg-stone-800"></span>
-            <span className="text-muted font-semibold">Almarhum / Wafat</span>
+          <div className="flex items-center gap-2.5 mt-0.5">
+            <span className="h-3 w-6 rounded border border-dashed border-stone-400 bg-stone-100/50 dark:bg-stone-800/40"></span>
+            <span className="text-muted/95 font-bold">Almarhum / Wafat</span>
           </div>
         </div>
 
