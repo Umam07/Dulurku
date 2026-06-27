@@ -238,13 +238,9 @@ export default function FamilyTree() {
             positionFamily(childId, childLeftX, childY);
 
             // Dapatkan koordinat anak yang terpasang
-            const childSpouse = spouseMap[childId];
             let targetConnectX = nodePositions[childId]?.x;
 
-            if (childSpouse && nodePositions[childSpouse]) {
-              // Jika anak berpasangan, hubungkan ke titik tengah pasangan tersebut
-              targetConnectX = (nodePositions[childId].x + nodePositions[childSpouse].x) / 2;
-            } else if (!nodePositions[childId]) {
+            if (!nodePositions[childId]) {
               // Jika anak belum terposisi (karena skip/ early return), gunakan estimasi
               targetConnectX = childLeftX + childWidth / 2;
             }
@@ -305,11 +301,8 @@ export default function FamilyTree() {
             const childWidth = subTreeWidths[childId] || NODE_WIDTH;
             positionFamily(childId, childLeftX, childY);
 
-            const childSpouse = spouseMap[childId];
             let targetConnectX = nodePositions[childId]?.x;
-            if (childSpouse && nodePositions[childSpouse]) {
-              targetConnectX = (nodePositions[childId].x + nodePositions[childSpouse].x) / 2;
-            } else if (!nodePositions[childId]) {
+            if (!nodePositions[childId]) {
               targetConnectX = childLeftX + childWidth / 2;
             }
 
@@ -668,7 +661,7 @@ export default function FamilyTree() {
                             ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400' 
                             : 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
                         }`}>
-                          {member.gender}
+                          {member.gender === 'M' ? 'L' : 'P'}
                         </span>
                       </div>
                     </div>
