@@ -42,21 +42,21 @@ export const initialMembers: Person[] = [
   },
 
   // Generasi 1: Anak-anak Mbah Hardjo & Mbah Siti (serta Pasangannya)
-  // 1. Budi Santoso & Dewi Lestari
+  // 1. Anshori & Dewi Lestari
   {
     id: 'p-g1-1',
-    name: 'Budi Santoso',
-    nickname: 'Pak Budi',
+    name: 'Anshori',
+    nickname: 'Pak Anshori',
     gender: 'M',
     birthDate: '1965-04-12',
     domicile: 'Surabaya',
     isMerantau: true,
     photoUrl: '',
     phone: '081234567811',
-    email: 'budi.santoso@email.com',
+    email: 'anshori@email.com',
     bio: 'Anak keenam dari tujuh bersaudara Mbah Hardjo. Bekerja sebagai pensiunan pegawai BUMN di Surabaya. Sangat mengayomi adik-adiknya dan menjadi penasihat utama dalam kepengurusan arisan keluarga.',
     memories: [
-      'Pak Budi sangat gemar merawat tanaman hias di rumahnya di Surabaya.',
+      'Pak Anshori sangat gemar merawat tanaman hias di rumahnya di Surabaya.',
       'Sering membawakan oleh-oleh spiku khas Surabaya setiap kali mudik ke Kediri.'
     ],
     generation: 1
@@ -72,7 +72,7 @@ export const initialMembers: Person[] = [
     photoUrl: '',
     phone: '081234567812',
     email: 'dewi.lestari@email.com',
-    bio: 'Anak kedua dari tiga bersaudara Mbah Sastro. Istri dari Pak Budi Santoso. Aktif dalam kegiatan sosial keagamaan dan piawai merajut pakaian untuk cucu-cucunya.',
+    bio: 'Anak kedua dari tiga bersaudara Mbah Sastro. Istri dari Pak Anshori. Aktif dalam kegiatan sosial keagamaan dan piawai merajut pakaian untuk cucu-cucunya.',
     generation: 1
   },
 
@@ -251,13 +251,13 @@ export const initialMembers: Person[] = [
     name: 'Rina Wulandari',
     nickname: 'Rina',
     gender: 'F',
-    birthDate: '1995-11-10',
+    birthDate: '1998-08-08',
     domicile: 'Jakarta',
     isMerantau: true,
     photoUrl: '',
     phone: '085712345603',
     email: 'rina.wulan@email.com',
-    bio: 'Cucu kedua Mbah Hardjo. Bekerja sebagai akuntan di sebuah perusahaan multinasional di Jakarta. Gemar kulineran dan traveling.',
+    bio: 'Anak ketiga dari tiga bersaudara Pak Anshori & Ibu Dewi. Bekerja sebagai akuntan di sebuah perusahaan multinasional di Jakarta. Gemar kulineran dan traveling.',
     memories: [
       'Mbak Rina adalah perwakilan keluarga yang merantau paling jauh ke Jakarta, namun paling rajin video call dengan Mbah Siti.'
     ],
@@ -591,19 +591,19 @@ export const initialMembers: Person[] = [
   },
 
   // JEMBATAN KEDUA BELAH PIHAK KELUARGA (AYAH & IBU)
-  // Anaknya Pak Budi Santoso (Pihak Ayah) & Ibu Dewi Lestari (Pihak Ibu)
+  // Anaknya Pak Anshori (Pihak Ayah) & Ibu Dewi Lestari (Pihak Ibu)
   {
     id: 'p-g2-umam',
     name: 'Umam',
     nickname: 'Umam',
     gender: 'M',
-    birthDate: '1998-08-08',
+    birthDate: '1995-11-10',
     domicile: 'Surabaya',
     isMerantau: true, // Merantau dari Kediri/Nganjuk ke Surabaya
     photoUrl: '',
     phone: '081234567899',
     email: 'umam@email.com',
-    bio: 'Cucu dari Mbah Hardjowidjojo (pihak Ayah) sekaligus cucu dari Mbah Sastrowardoyo (pihak Ibu). Bekerja sebagai Rekayasa Perangkat Lunak di Surabaya yang merancang platform Dulurku ini untuk menyatukan seluruh kerabat lintas generasi dan lintas kota.',
+    bio: 'Cucu dari Mbah Hardjowidjojo (pihak Ayah) sekaligus cucu dari Mbah Sastrowardoyo (pihak Ibu). Anak kedua dari tiga bersaudara Pak Anshori & Ibu Dewi. Bekerja sebagai Rekayasa Perangkat Lunak di Surabaya yang merancang platform Dulurku ini untuk menyatukan seluruh kerabat lintas generasi dan lintas kota.',
     memories: [
       'Ingat sekali saat mudik lebaran, diajak Mbah Hardjo minum teh sore di teras Kediri, lalu besoknya diajak Mbah Sastro melihat kebun jati di Nganjuk.',
       'Paling suka mengumpulkan seluruh sepupu dari kedua belah pihak untuk berdiskusi teknologi dan silaturahmi digital.'
@@ -735,17 +735,20 @@ export const initialParentChildRelations: ParentChild[] = [
   { parentId: 'p-g0-1', childId: 'p-g1-s3' }, // Mbah Hardjo ke Om Tri (Anak 5)
   { parentId: 'p-g0-2', childId: 'p-g1-s3' }, // Mbah Siti ke Om Tri
   
-  { parentId: 'p-g0-1', childId: 'p-g1-1' }, // Mbah Hardjo ke Pak Budi (Anak 6 - Ayah)
-  { parentId: 'p-g0-2', childId: 'p-g1-1' }, // Mbah Siti ke Pak Budi
+  { parentId: 'p-g0-1', childId: 'p-g1-1' }, // Mbah Hardjo ke Pak Anshori (Anak 6 - Ayah)
+  { parentId: 'p-g0-2', childId: 'p-g1-1' }, // Mbah Siti ke Pak Anshori
   
   { parentId: 'p-g0-1', childId: 'p-g1-7' }, // Mbah Hardjo ke Bu Anik (Anak 7 - Bungsu)
   { parentId: 'p-g0-2', childId: 'p-g1-7' }, // Mbah Siti ke Bu Anik
 
-  // Anak Pak Budi & Bu Dewi (Grandchildren Gen 2)
-  { parentId: 'p-g1-1', childId: 'p-g2-1' }, // Pak Budi ke Rudi
+  // Anak Pak Anshori & Bu Dewi (Grandchildren Gen 2)
+  { parentId: 'p-g1-1', childId: 'p-g2-1' }, // Pak Anshori ke Rudi (Anak 1)
   { parentId: 'p-g1-2', childId: 'p-g2-1' }, // Bu Dewi ke Rudi
   
-  { parentId: 'p-g1-1', childId: 'p-g2-3' }, // Pak Budi ke Rina
+  { parentId: 'p-g1-1', childId: 'p-g2-umam' }, // Pak Anshori ke Umam (Anak 2 - Saya)
+  { parentId: 'p-g1-2', childId: 'p-g2-umam' }, // Bu Dewi ke Umam
+  
+  { parentId: 'p-g1-1', childId: 'p-g2-3' }, // Pak Anshori ke Rina (Anak 3)
   { parentId: 'p-g1-2', childId: 'p-g2-3' }, // Bu Dewi ke Rina
 
   // Anak Bu Sri & Pak Joko (Grandchildren Gen 2)
@@ -786,11 +789,11 @@ export const initialParentChildRelations: ParentChild[] = [
 
   // --- RELASI ORANG TUA - ANAK PIHAK IBU ---
   // Anak Mbah Sastro & Mbah Martini (Pihak Ibu)
-  { parentId: 'p-m-g0-1', childId: 'p-g1-2' }, // Mbah Sastro ke Ibu Dewi
-  { parentId: 'p-m-g0-2', childId: 'p-g1-2' }, // Mbah Martini ke Ibu Dewi
-  { parentId: 'p-m-g0-1', childId: 'p-m-g1-1' }, // Mbah Sastro ke Pak Wibowo
+  { parentId: 'p-m-g0-1', childId: 'p-m-g1-1' }, // Mbah Sastro ke Pak Wibowo (Anak 1)
   { parentId: 'p-m-g0-2', childId: 'p-m-g1-1' }, // Mbah Martini ke Pak Wibowo
-  { parentId: 'p-m-g0-1', childId: 'p-m-g1-3' }, // Mbah Sastro ke Tante Indah
+  { parentId: 'p-m-g0-1', childId: 'p-g1-2' }, // Mbah Sastro ke Ibu Dewi (Anak 2)
+  { parentId: 'p-m-g0-2', childId: 'p-g1-2' }, // Mbah Martini ke Ibu Dewi
+  { parentId: 'p-m-g0-1', childId: 'p-m-g1-3' }, // Mbah Sastro ke Tante Indah (Anak 3)
   { parentId: 'p-m-g0-2', childId: 'p-m-g1-3' }, // Mbah Martini ke Tante Indah
 
   // Anak Pak Wibowo & Bu Retno (Gen 2)
@@ -802,10 +805,6 @@ export const initialParentChildRelations: ParentChild[] = [
   // Anak Tante Indah & Om Heri (Gen 2)
   { parentId: 'p-m-g1-3', childId: 'p-m-g2-3' }, // Tante Indah ke Adit
   { parentId: 'p-m-g1-4', childId: 'p-m-g2-3' }, // Om Heri ke Adit
-
-  // Anak Pak Budi Santoso (Ayah) & Ibu Dewi Lestari (Ibu) -> Umam!
-  { parentId: 'p-g1-1', childId: 'p-g2-umam' }, // Pak Budi ke Umam
-  { parentId: 'p-g1-2', childId: 'p-g2-umam' }  // Ibu Dewi ke Umam
 ];
 
 // Acara Awal Kalender Guyub
@@ -879,7 +878,7 @@ export const initialAnnouncements: Announcement[] = [
     title: 'Rencana Reuni Akbar & Syukuran Akhir Tahun 2026',
     content: 'Diberitahukan kepada seluruh dulur, baik yang menetap di Kediri maupun yang berada di perantauan (Surabaya, Malang, Sidoarjo, Bandung, Jakarta). Kita berencana mengadakan Reuni Akbar bertempat di Rumah Utama Kediri pada libur akhir tahun nanti, sekitar tanggal 25-27 Desember 2026. Mohon untuk mengosongkan jadwal pada tanggal tersebut. Detail susunan acara dan kontribusi akan segera diumumkan oleh panitia kecil (diketuai Mas Rudi). Guyub rukun selalu!',
     date: '2026-06-25',
-    author: 'Pak Budi Santoso',
+    author: 'Pak Anshori',
     category: 'reuni'
   },
   {

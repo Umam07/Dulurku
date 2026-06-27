@@ -608,7 +608,7 @@ export default function KebersamaanPage() {
                     value={annAuthor}
                     onChange={(e) => setAnnAuthor(e.target.value)}
                     required
-                    placeholder="Contoh: Budi Santoso"
+                    placeholder="Contoh: Pak Anshori"
                     className="w-full px-3 py-2 rounded-xl border border-border bg-background text-foreground font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
                   />
                 </div>

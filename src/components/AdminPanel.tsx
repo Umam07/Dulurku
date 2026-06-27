@@ -177,7 +177,7 @@ export default function AdminPanel({ editPersonId, onSuccess }: AdminPanelProps)
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            placeholder="Contoh: Budi Santoso"
+            placeholder="Contoh: Anshori"
             className="w-full px-3 py-2 rounded-xl border border-border bg-background text-foreground font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
@@ -188,7 +188,7 @@ export default function AdminPanel({ editPersonId, onSuccess }: AdminPanelProps)
             type="text"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            placeholder="Contoh: Pak Budi"
+            placeholder="Contoh: Pak Anshori"
             className="w-full px-3 py-2 rounded-xl border border-border bg-background text-foreground font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>

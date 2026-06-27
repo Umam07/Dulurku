@@ -51,10 +51,66 @@ interface FamilyContextType extends FamilyState {
 
 const FamilyContext = createContext<FamilyContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'dulurku_family_state_v1';
+const STORAGE_KEY = 'dulurku_family_state_v2';
 const AUTH_KEY = 'dulurku_auth_status';
 const ADMIN_KEY = 'dulurku_admin_mode';
 const INVITE_CODE = 'DULURGUYUB';
+
+// Fungsi sinkronisasi pintar untuk menggabungkan pembaruan initialData (dari developer/code)
+// dengan data kustom hasil input pengguna di browser agar tidak hilang saat di-refresh.
+const mergeInitialData = (stored: FamilyState): FamilyState => {
+  const initialMemberIds = new Set(initialMembers.map(m => m.id));
+  const initialRelIds = new Set(initialRelationships.map(r => r.id));
+  const initialEventIds = new Set(initialEvents.map(e => e.id));
+  const initialAnnIds = new Set(initialAnnouncements.map(a => a.id));
+  const initialGuestIds = new Set(initialGuestbook.map(g => g.id));
+
+  // 1. Sinkronisasi Anggota Keluarga (Members)
+  // Pertahankan anggota kustom yang ditambahkan oleh user (ID tidak terdaftar di initialMembers)
+  const userMembers = (stored.members || []).filter(m => !initialMemberIds.has(m.id));
+  // Tindih/update anggota bawaan dengan versi kode terbaru, lalu gabungkan dengan anggota buatan user
+  const mergedMembers = [...initialMembers, ...userMembers];
+
+  // 2. Sinkronisasi Hubungan Pernikahan (Spouse Relationships)
+  const userRels = (stored.relationships || []).filter(r => !initialRelIds.has(r.id));
+  const mergedRels = [...initialRelationships, ...userRels];
+
+  // 3. Sinkronisasi Hubungan Orang Tua - Anak (Parent-Child Relations)
+  const mergedParentChild = [...initialParentChildRelations];
+  (stored.parentChildRelations || []).forEach(storedPc => {
+    // Relasi kustom buatan user dipertahankan (jika melibatkan setidaknya satu anggota kustom)
+    const isUserRelation = !initialMemberIds.has(storedPc.parentId) || !initialMemberIds.has(storedPc.childId);
+    if (isUserRelation) {
+      const alreadyExists = mergedParentChild.some(
+        pc => pc.parentId === storedPc.parentId && pc.childId === storedPc.childId
+      );
+      if (!alreadyExists) {
+        mergedParentChild.push(storedPc);
+      }
+    }
+  });
+
+  // 4. Sinkronisasi Kalender Acara
+  const userEvents = (stored.events || []).filter(e => !initialEventIds.has(e.id));
+  const mergedEvents = [...initialEvents, ...userEvents];
+
+  // 5. Sinkronisasi Pengumuman (Announcements)
+  const userAnns = (stored.announcements || []).filter(a => !initialAnnIds.has(a.id));
+  const mergedAnns = [...userAnns, ...initialAnnouncements]; // Pengumuman kustom tetap di atas
+
+  // 6. Sinkronisasi Buku Tamu (Guestbook)
+  const userGuests = (stored.guestbook || []).filter(g => !initialGuestIds.has(g.id));
+  const mergedGuestbook = [...userGuests, ...initialGuestbook]; // Ucapan kustom tetap di atas
+
+  return {
+    members: mergedMembers,
+    relationships: mergedRels,
+    parentChildRelations: mergedParentChild,
+    events: mergedEvents,
+    announcements: mergedAnns,
+    guestbook: mergedGuestbook
+  };
+};
 
 export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<FamilyState>({
@@ -70,32 +126,32 @@ export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load state from localStorage on mount
+  // Load & Sync state dari localStorage saat aplikasi dijalankan
   useEffect(() => {
     /* eslint-disable react-hooks/set-state-in-effect */
     try {
-      const storedState = localStorage.getItem(STORAGE_KEY);
+      let storedState = localStorage.getItem(STORAGE_KEY);
+      
+      // Migrasi data silsilah dari versi v1 ke v2 secara transparan jika ada
+      if (!storedState) {
+        const oldState = localStorage.getItem('dulurku_family_state_v1');
+        if (oldState) {
+          storedState = oldState;
+          localStorage.removeItem('dulurku_family_state_v1'); // Bersihkan v1
+        }
+      }
+
       if (storedState) {
         const parsed = JSON.parse(storedState);
-        const hasUmam = parsed.members?.some((m: any) => m.id === 'p-g2-umam');
-        const hasMaternal = parsed.members?.some((m: any) => m.id === 'p-m-g0-1');
         
-        if (!hasUmam || !hasMaternal) {
-          const initialState: FamilyState = {
-            members: initialMembers,
-            relationships: initialRelationships,
-            parentChildRelations: initialParentChildRelations,
-            events: initialEvents,
-            announcements: initialAnnouncements,
-            guestbook: initialGuestbook
-          };
-          setState(initialState);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(initialState));
-        } else {
-          setState(parsed);
-        }
+        // Gabungkan/Sinkronkan data statis terbaru dari code dengan data input user
+        const syncedState = mergeInitialData(parsed);
+        setState(syncedState);
+        
+        // Simpan hasil gabungan kembali ke localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(syncedState));
       } else {
-        // First time initialization with seed data
+        // Inisialisasi pertama kali menggunakan benih data silsilah bawaan
         const initialState: FamilyState = {
           members: initialMembers,
           relationships: initialRelationships,
